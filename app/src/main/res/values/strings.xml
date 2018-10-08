@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">My Application</string>
+    <string name="email_hint">Email</string>
+    <string name="pwd_hint">Password</string>
+    <string name="add_btn">Add User</string>
+    <string name="enter_info">Enter Email and Password</string>
+    <string name="fname_hint">First Name</string>
+    <string name="lname_hint">Last Name</string>
 </resources>
