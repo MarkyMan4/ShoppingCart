@@ -14,14 +14,14 @@ import java.util.List;
 
 public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAdapter.ViewHolder> {
 
-    private List<String> itemNamesList;
+    private List<Item> itemList;
     private LayoutInflater myInflater;
     private ItemClickListener clickListener;
 
     // data is passed into the constructor
-    MyRecyclerViewAdapter(Context context, List<String> data) {
+    MyRecyclerViewAdapter(Context context, List<Item> data) {
         this.myInflater = LayoutInflater.from(context);
-        this.itemNamesList = data;
+        this.itemList = data;
     }
 
     // inflates the row layout from xml when needed
@@ -34,24 +34,30 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
     // binds the data to the TextView in each row
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        String itemName = itemNamesList.get(position);
-        holder.myTextView.setText(itemName);
+        String itemName = itemList.get(position).getName();
+        String itemDescription = itemList.get(position).getDescription();
+        String itemPrice = itemList.get(position).getPrice();
+        holder.itemNameTextView.setText(itemName);
+        holder.itemDescriptionTextView.setText(itemDescription);
+        holder.itemPriceTextView.setText("$" + itemPrice);
     }
 
     // total number of rows
     @Override
     public int getItemCount() {
-        return itemNamesList.size();
+        return itemList.size();
     }
 
 
     // stores and recycles views as they are scrolled off screen
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        TextView myTextView;
+        TextView itemNameTextView, itemDescriptionTextView, itemPriceTextView;
 
         ViewHolder(View itemView) {
             super(itemView);
-            myTextView = itemView.findViewById(R.id.itemName);
+            itemNameTextView = itemView.findViewById(R.id.itemName);
+            itemDescriptionTextView = itemView.findViewById(R.id.itemDescription);
+            itemPriceTextView = itemView.findViewById(R.id.itemPrice);
             itemView.setOnClickListener(this);
         }
 
@@ -63,7 +69,7 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
 
     // convenience method for getting data at click position
     String getItem(int id) {
-        return itemNamesList.get(id);
+        return itemList.get(id).getName();
     }
 
     // allows clicks events to be caught

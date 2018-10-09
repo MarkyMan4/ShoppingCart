@@ -4,6 +4,7 @@ import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -21,6 +22,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
+//this is a pointless change.
 public class BrowseActivity extends AppCompatActivity implements MyRecyclerViewAdapter.ItemClickListener {
     MyRecyclerViewAdapter rvAdapter;
     private FirebaseDatabase fDatabase;
@@ -43,10 +45,13 @@ public class BrowseActivity extends AppCompatActivity implements MyRecyclerViewA
                 // This method is called once with the initial value and again
                 // whenever data at this location is updated.
                 RecyclerView recyclerView = findViewById(R.id.rvItems);
-                recyclerView.setLayoutManager(new LinearLayoutManager(this));
+                LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+                recyclerView.setLayoutManager(layoutManager);
                 rvAdapter = new MyRecyclerViewAdapter(this, getData(dataSnapshot));
                 rvAdapter.setClickListener(this);
                 recyclerView.setAdapter(rvAdapter);
+                DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(), layoutManager.getOrientation());
+                recyclerView.addItemDecoration(dividerItemDecoration);
             }
 
             @Override
