@@ -21,6 +21,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class BrowseActivity extends AppCompatActivity implements MyRecyclerViewAdapter.ItemClickListener {
@@ -44,14 +45,7 @@ public class BrowseActivity extends AppCompatActivity implements MyRecyclerViewA
             public void onDataChange(DataSnapshot dataSnapshot) {
                 // This method is called once with the initial value and again
                 // whenever data at this location is updated.
-                RecyclerView recyclerView = findViewById(R.id.rvItems);
-                LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-                recyclerView.setLayoutManager(layoutManager);
-                rvAdapter = new MyRecyclerViewAdapter(this, getData(dataSnapshot));
-                rvAdapter.setClickListener(this);
-                recyclerView.setAdapter(rvAdapter);
-                DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(), layoutManager.getOrientation());
-                recyclerView.addItemDecoration(dividerItemDecoration);
+                doRecyclerView(dataSnapshot);
             }
 
             @Override
@@ -82,8 +76,19 @@ public class BrowseActivity extends AppCompatActivity implements MyRecyclerViewA
         //recyclerView.setAdapter(rvAdapter);
     }
 
-    private ArrayList<Item> getData(DataSnapshot dataSnapshot) {
-        ArrayList<Item> items = new ArrayList<>();
+    private void doRecyclerView(DataSnapshot dataSnapshot){
+        RecyclerView recyclerView = findViewById(R.id.rvItems);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(layoutManager);
+        rvAdapter = new MyRecyclerViewAdapter(this, getData(dataSnapshot));
+        rvAdapter.setClickListener(this);
+        recyclerView.setAdapter(rvAdapter);
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(), layoutManager.getOrientation());
+        recyclerView.addItemDecoration(dividerItemDecoration);
+    }
+
+    private List<Item> getData(DataSnapshot dataSnapshot) {
+        List<Item> items = new ArrayList<>();
         for(DataSnapshot ds : dataSnapshot.getChildren()) {
             Item item = new Item();
             item.setName((String)ds.child("name").getValue());
