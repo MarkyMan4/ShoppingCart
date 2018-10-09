@@ -1,39 +1,102 @@
 package com.example.myapplication;
 
+import android.provider.ContactsContract;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
 public class BrowseActivity extends AppCompatActivity implements MyRecyclerViewAdapter.ItemClickListener {
     MyRecyclerViewAdapter rvAdapter;
+    private FirebaseDatabase fDatabase;
+    private DatabaseReference dbRef;
+    private FirebaseAuth auth;
+    private int itemIndex = 1;
+    private FirebaseAuth.AuthStateListener authListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_browse);
+        auth = FirebaseAuth.getInstance();
+        fDatabase = FirebaseDatabase.getInstance();
+        dbRef = fDatabase.getReference().child("items");
 
-        ArrayList<Item> itemsList = new ArrayList<>();
-        itemsList.add(new Item("test1", "this is test item 1.", 1.00));
-        itemsList.add(new Item("test2", "this is test item 2.", 2.00));
-        itemsList.add(new Item("test3", "this is test item 3.", 3.00));
-        itemsList.add(new Item("test4", "this is test item 4.", 4.00));
-        itemsList.add(new Item("test5", "kjuheraikjgraiouprgouipraes .", 1.00));
+        dbRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                // This method is called once with the initial value and again
+                // whenever data at this location is updated.
+                RecyclerView recyclerView = findViewById(R.id.rvItems);
+                LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+                recyclerView.setLayoutManager(layoutManager);
+                rvAdapter = new MyRecyclerViewAdapter(this, getData(dataSnapshot));
+                rvAdapter.setClickListener(this);
+                recyclerView.setAdapter(rvAdapter);
+                DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(), layoutManager.getOrientation());
+                recyclerView.addItemDecoration(dividerItemDecoration);
+            }
 
+            @Override
+            public void onCancelled(DatabaseError error) {
+                // Failed to read value
+            }
+        });
 
-        RecyclerView recyclerView = findViewById(R.id.rvItems);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(layoutManager);
-        rvAdapter = new MyRecyclerViewAdapter(this, itemsList);
-        rvAdapter.setClickListener(this);
-        recyclerView.setAdapter(rvAdapter);
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(), layoutManager.getOrientation());
-        recyclerView.addItemDecoration(dividerItemDecoration);
+        authListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+
+                if(user!=null){
+                    //User signed in
+                }else{
+                    //user is signed out
+                    Log.d("Here: ", "user not signed in");
+
+                }
+            }
+        };
+
+        //RecyclerView recyclerView = findViewById(R.id.rvItems);
+        //recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        //rvAdapter = new MyRecyclerViewAdapter(this, animalNames);
+        //rvAdapter.setClickListener(this);
+        //recyclerView.setAdapter(rvAdapter);
+    }
+
+    private ArrayList<Item> getData(DataSnapshot dataSnapshot) {
+        ArrayList<Item> items = new ArrayList<>();
+        for(DataSnapshot ds : dataSnapshot.getChildren()) {
+            Item item = new Item();
+            item.setName((String)ds.child("name").getValue());
+            item.setDescription((String)ds.child("description").getValue());
+            item.setPrice(ds.child("price").getValue() + "");
+            items.add(item);
+        }
+        return items;
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        auth.addAuthStateListener(authListener);
     }
 
     @Override
