@@ -101,6 +101,6 @@ public class BrowseActivity extends AppCompatActivity implements MyRecyclerViewA
 
     @Override
     public void onItemClick(View view, int position) {
-        Toast.makeText(this, "You clicked " + rvAdapter.getItem(position) + " on row number " + position, Toast.LENGTH_SHORT).show();
+
     }
 }
