@@ -123,6 +123,14 @@ public class MainActivity extends AppCompatActivity {
                 createPopupDialog();
             }
         });
+
+        guest.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, BrowseActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     private void createPopupDialog() {
