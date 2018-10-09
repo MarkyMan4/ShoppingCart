@@ -33,7 +33,7 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
     public void onBindViewHolder(ViewHolder holder, int position) {
         String itemName = itemList.get(position).getName();
         String itemDescription = itemList.get(position).getDescription();
-        double itemPrice = itemList.get(position).getPrice();
+        String itemPrice = itemList.get(position).getPrice();
         holder.itemNameTextView.setText(itemName);
         holder.itemDescriptionTextView.setText(itemDescription);
         holder.itemPriceTextView.setText("$" + itemPrice);
