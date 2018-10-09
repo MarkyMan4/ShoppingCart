@@ -68,12 +68,6 @@ public class BrowseActivity extends AppCompatActivity implements MyRecyclerViewA
                 }
             }
         };
-
-        //RecyclerView recyclerView = findViewById(R.id.rvItems);
-        //recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        //rvAdapter = new MyRecyclerViewAdapter(this, animalNames);
-        //rvAdapter.setClickListener(this);
-        //recyclerView.setAdapter(rvAdapter);
     }
 
     private void doRecyclerView(DataSnapshot dataSnapshot){
