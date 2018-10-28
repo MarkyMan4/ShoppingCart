@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.text.DecimalFormat;
 import java.util.List;
 
 public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAdapter.ViewHolder> {
@@ -37,9 +38,10 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
         String itemName = itemList.get(position).getName();
         String itemDescription = itemList.get(position).getDescription();
         String itemPrice = itemList.get(position).getPrice();
+        DecimalFormat df = new DecimalFormat("0.00");
         holder.itemNameTextView.setText(itemName);
         holder.itemDescriptionTextView.setText(itemDescription);
-        holder.itemPriceTextView.setText("$" + itemPrice);
+        holder.itemPriceTextView.setText("$" + df.format(Double.parseDouble(itemPrice)));
     }
 
     // total number of rows
