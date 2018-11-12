@@ -6,9 +6,6 @@ public class User {
     private boolean isAdmin;
     private String last;
 
-    public User() {
-    }
-
     public User(String email, String first, String last) {
         this.email = email;
         this.first = first;
