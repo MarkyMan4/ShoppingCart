@@ -167,8 +167,8 @@ public class AdminDashboard extends AppCompatActivity {
                     ItemDiscount discount = new ItemDiscount(start, end, percent);
                     dbRef.child("itemDiscount").child(name).setValue(discount);
                     dbRef.child("items").child(id).child("discountCode").setValue(name);
-                    //dbRef.child("items").child(id).child("discount").setValue(percent);
                     dialog.hide();
+                    toastMessage("Promotion Successfully Created!");
                 }
             }
         });
