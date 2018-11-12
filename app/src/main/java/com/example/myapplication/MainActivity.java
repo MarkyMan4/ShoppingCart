@@ -48,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
     private EditText popupFName;
     private EditText popupLName;
     private Button addBtn;
+    private DataSnapshot ds;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +82,20 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
+        dbRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                // This method is called once with the initial value and again
+                // whenever data at this location is updated.
+                ds = dataSnapshot;
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                // Failed to read value
+            }
+        });
+
         signIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -94,7 +109,10 @@ public class MainActivity extends AppCompatActivity {
                                     if (task.isSuccessful()) {
                                         // Sign in success, update UI with the signed-in user's information
                                         FirebaseUser user = mAuth.getCurrentUser();
+                                        boolean isAdmin = (boolean)ds.child("users").child(user.getUid()).child("isAdmin").getValue();
                                         Intent intent = new Intent(MainActivity.this, BrowseActivity.class);
+                                        if(isAdmin)
+                                            intent = new Intent(MainActivity.this, AdminDashboard.class);
                                         startActivity(intent);
                                     } else {
                                         // If sign in fails, display a message to the user.
