@@ -11,6 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.SearchView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -34,6 +35,8 @@ public class BrowseActivity extends AppCompatActivity implements MyRecyclerViewA
     private int itemIndex = 1;
     private FirebaseAuth.AuthStateListener authListener;
     private Button signOut;
+    private SearchView searchView;
+    private List<Item> items;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +46,9 @@ public class BrowseActivity extends AppCompatActivity implements MyRecyclerViewA
         fDatabase = FirebaseDatabase.getInstance();
         dbRef = fDatabase.getReference().child("items");
         signOut = findViewById(R.id.signout);
+        searchView = findViewById(R.id.searchbar);
+
+        setSignOutButton();
 
         signOut.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -85,6 +91,14 @@ public class BrowseActivity extends AppCompatActivity implements MyRecyclerViewA
         };
     }
 
+    private void setSignOutButton() {
+        FirebaseUser user = auth.getCurrentUser();
+        //if no user is signed in, the sign out button is appropriately renamed 'Exit'
+        if(user==null){
+            signOut.setText("Exit");
+        }
+    }
+
     private void doRecyclerView(DataSnapshot dataSnapshot){
         RecyclerView recyclerView = findViewById(R.id.rvItems);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
@@ -97,12 +111,13 @@ public class BrowseActivity extends AppCompatActivity implements MyRecyclerViewA
     }
 
     private List<Item> getData(DataSnapshot dataSnapshot) {
-        List<Item> items = new ArrayList<>();
+        items = new ArrayList<>();
         for(DataSnapshot ds : dataSnapshot.getChildren()) {
             Item item = new Item();
             item.setName((String)ds.child("name").getValue());
             item.setDescription((String)ds.child("description").getValue());
             item.setPrice(ds.child("price").getValue() + "");
+            item.setId(ds.getKey());
             items.add(item);
         }
         return items;
@@ -116,7 +131,10 @@ public class BrowseActivity extends AppCompatActivity implements MyRecyclerViewA
 
     @Override
     public void onItemClick(View view, int position) {
-
+        Item item = items.get(position);
+        Intent intent = new Intent(BrowseActivity.this, ItemDetailActivity.class);
+        intent.putExtra("ID", item.getId());
+        startActivity(intent);
     }
 
     private void toastMessage(String msg) {
