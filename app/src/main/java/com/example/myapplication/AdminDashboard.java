@@ -22,7 +22,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.lang.reflect.Array;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 
 public class AdminDashboard extends AppCompatActivity {
@@ -40,6 +42,9 @@ public class AdminDashboard extends AppCompatActivity {
     private Spinner promoSpinner;
     private Spinner itemSpinner;
     private EditText percentInput;
+    private EditText startDate;
+    private EditText endDate;
+    private EditText codeName;
     private AlertDialog.Builder dialogBuilder;
     private AlertDialog dialog;
 
@@ -128,6 +133,9 @@ public class AdminDashboard extends AppCompatActivity {
         percentInput = view.findViewById(R.id.percentinput);
         finish = view.findViewById(R.id.finishbtn);
         cancel = view.findViewById(R.id.cancelbtn);
+        startDate = view.findViewById(R.id.start);
+        endDate = view.findViewById(R.id.end);
+        codeName = view.findViewById(R.id.name);
 
         DataSnapshot items = data.child("items");
         final ArrayList<String> itemList = new ArrayList<>(); //make sure these being final doesn't mess anything up
@@ -144,11 +152,24 @@ public class AdminDashboard extends AppCompatActivity {
         finish.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String item = itemSpinner.getSelectedItem().toString();
-                String id = itemIDs.get(itemList.indexOf(item)).toString();
-                int percent = Integer.parseInt(percentInput.getText().toString());
-                dbRef.child("items").child(id).child("discount").setValue(percent);
-                dialog.hide();
+                if(codeName.getText().toString().matches("") ||percentInput.getText().toString().matches("")
+                        || startDate.getText().toString().matches("") || endDate.getText().toString().matches("")) {
+                    toastMessage("Complete All Fields");
+                }
+                else {
+                    String name = codeName.getText().toString();
+                    String item = itemSpinner.getSelectedItem().toString();
+                    String id = itemIDs.get(itemList.indexOf(item)).toString();
+                    int percent = Integer.parseInt(percentInput.getText().toString());
+                    SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy");
+                    String start = startDate.getText().toString();
+                    String end = endDate.getText().toString();
+                    ItemDiscount discount = new ItemDiscount(start, end, percent);
+                    dbRef.child("itemDiscount").child(name).setValue(discount);
+                    dbRef.child("items").child(id).child("discountCode").setValue(name);
+                    //dbRef.child("items").child(id).child("discount").setValue(percent);
+                    dialog.hide();
+                }
             }
         });
 
