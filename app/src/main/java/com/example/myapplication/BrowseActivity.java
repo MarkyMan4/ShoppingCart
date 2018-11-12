@@ -1,5 +1,6 @@
 package com.example.myapplication;
 
+import android.content.Intent;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -9,6 +10,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -31,6 +33,7 @@ public class BrowseActivity extends AppCompatActivity implements MyRecyclerViewA
     private FirebaseAuth auth;
     private int itemIndex = 1;
     private FirebaseAuth.AuthStateListener authListener;
+    private Button signOut;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +42,18 @@ public class BrowseActivity extends AppCompatActivity implements MyRecyclerViewA
         auth = FirebaseAuth.getInstance();
         fDatabase = FirebaseDatabase.getInstance();
         dbRef = fDatabase.getReference().child("items");
+        signOut = findViewById(R.id.signout);
+
+        signOut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                auth.signOut();
+                toastMessage("Signed Out");
+                Intent intent = new Intent(BrowseActivity.this, MainActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
 
         dbRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -102,5 +117,9 @@ public class BrowseActivity extends AppCompatActivity implements MyRecyclerViewA
     @Override
     public void onItemClick(View view, int position) {
 
+    }
+
+    private void toastMessage(String msg) {
+        Toast.makeText(BrowseActivity.this, msg, Toast.LENGTH_SHORT).show();
     }
 }
