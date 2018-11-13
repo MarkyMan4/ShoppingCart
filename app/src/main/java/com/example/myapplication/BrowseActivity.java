@@ -135,17 +135,6 @@ public class BrowseActivity extends AppCompatActivity implements MyRecyclerViewA
         recyclerView.addItemDecoration(dividerItemDecoration);
     }
 
-    private void doRecyclerView(DataSnapshot dataSnapshot){
-        RecyclerView recyclerView = findViewById(R.id.rvItems);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(layoutManager);
-        rvAdapter = new MyRecyclerViewAdapter(this, getData(dataSnapshot));
-        rvAdapter.setClickListener(this);
-        recyclerView.setAdapter(rvAdapter);
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(), layoutManager.getOrientation());
-        recyclerView.addItemDecoration(dividerItemDecoration);
-    }
-
     private ArrayList<Item> getData(DataSnapshot dataSnapshot) {
         items = new ArrayList<>();
         for(DataSnapshot ds : dataSnapshot.getChildren()) {
