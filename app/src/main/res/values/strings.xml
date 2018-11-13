@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">My Application</string>
+    <string name="app_name">Shopping Cart App</string>
     <string name="email_hint">Email</string>
     <string name="pwd_hint">Password</string>
     <string name="add_btn">Add User</string>

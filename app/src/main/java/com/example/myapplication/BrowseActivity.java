@@ -26,7 +26,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
-//this is a pointless change.
+
 public class BrowseActivity extends AppCompatActivity implements MyRecyclerViewAdapter.ItemClickListener {
     MyRecyclerViewAdapter rvAdapter;
     private FirebaseDatabase fDatabase;
