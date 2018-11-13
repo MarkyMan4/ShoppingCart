@@ -19,6 +19,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.DecimalFormat;
+
 public class ItemDetailActivity extends AppCompatActivity {
 
     private TextView title, priceLabel, description;
@@ -57,7 +59,8 @@ public class ItemDetailActivity extends AppCompatActivity {
                 data = dataSnapshot;
                 item = getItemData(ID);
                 title.setText(item.getName());
-                priceLabel.setText("Price: $" + Double.parseDouble(item.getPrice()));
+                DecimalFormat df = new DecimalFormat("0.00");
+                priceLabel.setText("Price: $" + df.format(Double.parseDouble(item.getPrice())));
                 description.setText(item.getDescription());
                 quantity.setText("0");
             }
