@@ -23,13 +23,14 @@ public class ItemDetailActivity extends AppCompatActivity {
 
     private TextView title, priceLabel, description;
     private EditText quantity;
-    private Button addToCart;
+    private Button addToCart, back;
 
     private FirebaseDatabase fDatabase;
     private DatabaseReference dbRef;
     private FirebaseAuth auth;
     private FirebaseAuth.AuthStateListener authListener;
     private DataSnapshot data;
+    private Item item;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +46,7 @@ public class ItemDetailActivity extends AppCompatActivity {
         description = findViewById(R.id.desclabel);
         quantity = findViewById(R.id.editquantity);
         addToCart = findViewById(R.id.addbtn);
+        back = findViewById(R.id.backbtn);
         final String ID = getIntent().getStringExtra("ID");
 
         dbRef.addValueEventListener(new ValueEventListener() {
@@ -52,9 +54,8 @@ public class ItemDetailActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 // This method is called once with the initial value and again
                 // whenever data at this location is updated.
-                System.out.println("******************************************");
                 data = dataSnapshot;
-                Item item = getItemData(ID);
+                item = getItemData(ID);
                 title.setText(item.getName());
                 priceLabel.setText("Price: $" + Double.parseDouble(item.getPrice()));
                 description.setText(item.getDescription());
@@ -67,7 +68,30 @@ public class ItemDetailActivity extends AppCompatActivity {
             }
         });
 
+        addToCart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int quant = 0;
+                if(!quantity.getText().toString().matches(""))
+                    quant = Integer.parseInt(quantity.getText().toString());
+                if(quant > 0) {
+                    FirebaseUser user = auth.getCurrentUser();
+                    dbRef.child("shoppingCarts").child(user.getUid()).child(item.getId()).child("quantity").setValue(quant);
+                    toastMessage("Added " + quant + " " + item.getName() + " to your cart");
+                }
+                else {
+                    toastMessage("Please Enter a Valid Quantity");
+                }
+            }
+        });
 
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(ItemDetailActivity.this, BrowseActivity.class);
+                startActivity(intent);
+            }
+        });
 
         authListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -91,6 +115,7 @@ public class ItemDetailActivity extends AppCompatActivity {
         item.setName(itemData.child("name").getValue().toString());
         item.setDescription(itemData.child("description").getValue().toString());
         item.setPrice(itemData.child("price").getValue().toString());
+        item.setId(itemId);
         return item;
     }
 
