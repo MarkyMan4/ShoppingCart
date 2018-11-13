@@ -6,56 +6,57 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
 import java.text.DecimalFormat;
 import java.util.List;
 
-public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAdapter.ViewHolder> {
+public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapter.ViewHolder> {
 
-    private List<Item> itemList;
+    private List<Item> cartList;
     private LayoutInflater myInflater;
     private ItemClickListener clickListener;
 
     // data is passed into the constructor
-    MyRecyclerViewAdapter(Context context, List<Item> data) {
+    ShoppingCartAdapter(Context context, List<Item> data) {
         this.myInflater = LayoutInflater.from(context);
-        this.itemList = data;
+        this.cartList = data;
     }
 
     // inflates the row layout from xml when needed
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = myInflater.inflate(R.layout.rvitems_row, parent, false);
+        View view = myInflater.inflate(R.layout.activity_shopping_cart_rows, parent, false);
         return new ViewHolder(view);
     }
 
     // binds the data to the TextView in each row
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        String itemName = itemList.get(position).getName();
-        String itemDescription = itemList.get(position).getDescription();
-        String itemPrice = itemList.get(position).getPrice();
+        String itemName = cartList.get(position).getName();
+        //need to get quantity
+        String itemQuantity = cartList.get(position).;
+        String itemPrice = cartList.get(position).getPrice();
         DecimalFormat df = new DecimalFormat("0.00");
         holder.itemNameTextView.setText(itemName);
-        holder.itemDescriptionTextView.setText(itemDescription);
+        holder.itemQuantityTextView.setText(itemQuantity);
         holder.itemPriceTextView.setText("$" + df.format(Double.parseDouble(itemPrice)));
     }
 
     // total number of rows
     @Override
     public int getItemCount() {
-        return itemList.size();
+        return cartList.size();
     }
 
 
     // stores and recycles views as they are scrolled off screen
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        TextView itemNameTextView, itemDescriptionTextView, itemPriceTextView;
+        TextView itemNameTextView, itemQuantityTextView, itemPriceTextView;;
 
         ViewHolder(View itemView) {
             super(itemView);
-            itemNameTextView = itemView.findViewById(R.id.itemName);
-            itemDescriptionTextView = itemView.findViewById(R.id.itemDescription);
-            itemPriceTextView = itemView.findViewById(R.id.itemPrice);
+            itemNameTextView = itemView.findViewById(R.id.item);
+            itemQuantityTextView = itemView.findViewById(R.id.itemQuantity);
             itemView.setOnClickListener(this);
         }
 
@@ -67,7 +68,7 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
 
     // convenience method for getting data at click position
     String getItem(int id) {
-        return itemList.get(id).getName();
+        return cartList.get(id).getName();
     }
 
     // allows clicks events to be caught

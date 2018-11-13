@@ -6,4 +6,7 @@
     <string name="enter_info">Enter Email and Password</string>
     <string name="fname_hint">First Name</string>
     <string name="lname_hint">Last Name</string>
+    <string name="shopping_cart_png">Shopping cart png</string>
+    <string name="sign_out">Sign Out</string>
+    <string name="checkout">Checkout</string>
 </resources>

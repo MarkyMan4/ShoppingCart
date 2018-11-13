@@ -19,7 +19,9 @@
         <activity android:name=".ShoppingActivity" />
         <activity android:name=".BrowseActivity" />
         <activity android:name=".AdminDashboard" />
-        <activity android:name=".ItemDetailActivity"></activity>
+        <activity android:name=".ItemDetailActivity" />
+        <activity android:name=".ShoppingCart" />
+        <activity android:name=".ShoppingCartAdapter"></activity>
     </application>
 
 </manifest>
