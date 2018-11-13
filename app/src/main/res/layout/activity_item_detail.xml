@@ -22,7 +22,7 @@
         android:textStyle="bold" />
 
     <ImageView
-        android:id="@+id/imageView3"
+        android:id="@+id/prodImg"
         android:layout_width="match_parent"
         android:layout_height="104dp"
         app:srcCompat="@android:drawable/btn_star_big_on" />

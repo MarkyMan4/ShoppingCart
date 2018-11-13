@@ -1,6 +1,7 @@
 package com.example.myapplication;
 
 import android.content.Intent;
+import android.media.Image;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -8,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,6 +28,7 @@ public class ItemDetailActivity extends AppCompatActivity {
     private TextView title, priceLabel, description;
     private EditText quantity;
     private Button addToCart, back;
+    private ImageView productImage;
 
     private FirebaseDatabase fDatabase;
     private DatabaseReference dbRef;
@@ -49,6 +52,7 @@ public class ItemDetailActivity extends AppCompatActivity {
         quantity = findViewById(R.id.editquantity);
         addToCart = findViewById(R.id.addbtn);
         back = findViewById(R.id.backbtn);
+        productImage = findViewById(R.id.prodImg);
         final String ID = getIntent().getStringExtra("ID");
 
         dbRef.addValueEventListener(new ValueEventListener() {
@@ -62,7 +66,7 @@ public class ItemDetailActivity extends AppCompatActivity {
                 DecimalFormat df = new DecimalFormat("0.00");
                 priceLabel.setText("Price: $" + df.format(Double.parseDouble(item.getPrice())));
                 description.setText(item.getDescription());
-                quantity.setText("0");
+                quantity.setText("1");
             }
 
             @Override
