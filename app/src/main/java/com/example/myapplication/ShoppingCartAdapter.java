@@ -12,12 +12,12 @@ import java.util.List;
 
 public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapter.ViewHolder> {
 
-    private List<Item> cartList;
+    private List<ShoppingCartItem> cartList;
     private LayoutInflater myInflater;
     private ItemClickListener clickListener;
 
     // data is passed into the constructor
-    ShoppingCartAdapter(Context context, List<Item> data) {
+    ShoppingCartAdapter(Context context, List<ShoppingCartItem> data) {
         this.myInflater = LayoutInflater.from(context);
         this.cartList = data;
     }
@@ -32,10 +32,9 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
     // binds the data to the TextView in each row
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        String itemName = cartList.get(position).getName();
-        //need to get quantity
-        String itemQuantity = cartList.get(position).;
-        String itemPrice = cartList.get(position).getPrice();
+        String itemName = cartList.get(position).getItem().getName();
+        String itemQuantity = "" + cartList.get(position).getQuantity();
+        String itemPrice = cartList.get(position).getItem().getPrice();
         DecimalFormat df = new DecimalFormat("0.00");
         holder.itemNameTextView.setText(itemName);
         holder.itemQuantityTextView.setText(itemQuantity);
@@ -55,8 +54,9 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
 
         ViewHolder(View itemView) {
             super(itemView);
-            itemNameTextView = itemView.findViewById(R.id.item);
+            itemNameTextView = itemView.findViewById(R.id.cartItemName);
             itemQuantityTextView = itemView.findViewById(R.id.itemQuantity);
+            itemPriceTextView = itemView.findViewById(R.id.cartItemPrice);
             itemView.setOnClickListener(this);
         }
 
@@ -64,11 +64,6 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
         public void onClick(View view) {
             if (clickListener != null) clickListener.onItemClick(view, getAdapterPosition());
         }
-    }
-
-    // convenience method for getting data at click position
-    String getItem(int id) {
-        return cartList.get(id).getName();
     }
 
     // allows clicks events to be caught

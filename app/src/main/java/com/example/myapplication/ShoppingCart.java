@@ -22,7 +22,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
-public class ShoppingCart extends AppCompatActivity implements MyRecyclerViewAdapter.ItemClickListener {
+public class ShoppingCart extends AppCompatActivity implements ShoppingCartAdapter.ItemClickListener {
     ShoppingCartAdapter scAdapter;
     private FirebaseDatabase fDatabase;
     private DatabaseReference dbRef;
@@ -74,14 +74,14 @@ public class ShoppingCart extends AppCompatActivity implements MyRecyclerViewAda
         };
     }
 
-    /*private void updateRecyclerView(ArrayList<Item> newItems) {
+    private void updateRecyclerView(ArrayList<ShoppingCartItem> newItems) {
         RecyclerView recyclerView = findViewById(R.id.rvItems);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
         scAdapter = new ShoppingCartAdapter(this, newItems);
         scAdapter.setClickListener(this);
         recyclerView.setAdapter(scAdapter);
-    }*/
+    }
 
     private void doRecyclerView(){
         RecyclerView recyclerView = findViewById(R.id.rvItems);
@@ -93,7 +93,7 @@ public class ShoppingCart extends AppCompatActivity implements MyRecyclerViewAda
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(), layoutManager.getOrientation());
         recyclerView.addItemDecoration(dividerItemDecoration);
     }
-
+    
     private void getData(DataSnapshot itemData, DataSnapshot cartData) {
         items = new ArrayList<>();
         for(DataSnapshot ds : cartData.getChildren()) {
