@@ -114,6 +114,10 @@ public class ShoppingCart extends AppCompatActivity implements ShoppingCartAdapt
                 boolean isValid = true;
                 double discount = 0.0;
                 String inputPromoCode = promoCode.getText().toString();
+                if (inputPromoCode.isEmpty()) {
+                    toastMessage("Promo Code Not Valid");
+                    return;
+                }
                 if (snapshot.child("itemDiscount").hasChild(inputPromoCode)) {
                     Date today = new Date(System.currentTimeMillis());
                     SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy");
