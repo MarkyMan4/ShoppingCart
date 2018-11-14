@@ -38,7 +38,7 @@ public class ShoppingCart extends AppCompatActivity implements ShoppingCartAdapt
         setContentView(R.layout.activity_shopping_cart);
         auth = FirebaseAuth.getInstance();
         fDatabase = FirebaseDatabase.getInstance();
-        dbRef = fDatabase.getReference().child("items");
+        dbRef = fDatabase.getReference();
 
         dbRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -101,7 +101,6 @@ public class ShoppingCart extends AppCompatActivity implements ShoppingCartAdapt
             String itemId = ds.getKey();
             item.setId(itemId);
             item.setName(itemData.child(itemId).child("name").getValue().toString());
-            System.out.println(item.getName());
             item.setPrice(itemData.child(itemId).child("price").getValue().toString());
             item.setDescription(itemData.child(itemId).child("description").getValue().toString());
             int quantity = Integer.parseInt(ds.child("quantity").getValue().toString());
