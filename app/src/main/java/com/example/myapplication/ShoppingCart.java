@@ -93,7 +93,7 @@ public class ShoppingCart extends AppCompatActivity implements ShoppingCartAdapt
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(), layoutManager.getOrientation());
         recyclerView.addItemDecoration(dividerItemDecoration);
     }
-    
+
     private void getData(DataSnapshot itemData, DataSnapshot cartData) {
         items = new ArrayList<>();
         for(DataSnapshot ds : cartData.getChildren()) {
