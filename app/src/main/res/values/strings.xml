@@ -14,4 +14,5 @@
     <string name="textview">TextView</string>
     <string name="enter_promo_code">Enter Promo Code</string>
     <string name="submit_code">Submit Code</string>
+    <string name="back_to_browse">Back To Browse</string>
 </resources>
