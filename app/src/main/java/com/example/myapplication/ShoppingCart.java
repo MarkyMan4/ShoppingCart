@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -20,6 +21,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 public class ShoppingCart extends AppCompatActivity implements ShoppingCartAdapter.ItemClickListener {
@@ -28,8 +30,10 @@ public class ShoppingCart extends AppCompatActivity implements ShoppingCartAdapt
     private DatabaseReference dbRef;
     private FirebaseAuth auth;
     private FirebaseAuth.AuthStateListener authListener;
-    private Button checkOut;
+    private Button checkOut, promoCodeBtn;
     private ArrayList<ShoppingCartItem> items;
+    private TextView total, promoCode;
+    private DataSnapshot snapshot;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,12 +43,16 @@ public class ShoppingCart extends AppCompatActivity implements ShoppingCartAdapt
         auth = FirebaseAuth.getInstance();
         fDatabase = FirebaseDatabase.getInstance();
         dbRef = fDatabase.getReference();
+        total = findViewById(R.id.totalPrice);
+        promoCodeBtn = findViewById(R.id.promoCodeBtn);
+        promoCode = findViewById(R.id.promoCode);
 
         dbRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 // This method is called once with the initial value and again
                 // whenever data at this location is updated.
+                snapshot = dataSnapshot;
                 FirebaseUser user = auth.getCurrentUser();
                 if(user.getUid() != null) {
                     getData(dataSnapshot.child("items"), dataSnapshot.child("shoppingCarts").child(user.getUid()));
@@ -72,6 +80,17 @@ public class ShoppingCart extends AppCompatActivity implements ShoppingCartAdapt
                 }
             }
         };
+
+        promoCodeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //code to get and validate promo code
+                String inputPromoCode = (String) promoCode.getText();
+                if (snapshot.child("itemDiscount").hasChild(inputPromoCode)) {
+                    
+                }
+            }
+        });
     }
 
     private void updateRecyclerView(ArrayList<ShoppingCartItem> newItems) {
@@ -92,6 +111,16 @@ public class ShoppingCart extends AppCompatActivity implements ShoppingCartAdapt
         recyclerView.setAdapter(scAdapter);
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(), layoutManager.getOrientation());
         recyclerView.addItemDecoration(dividerItemDecoration);
+        updatePrice();
+    }
+
+    private void updatePrice() {
+        DecimalFormat df = new DecimalFormat("0.00");
+        double subTotal = 0;
+        for (int i = 0; i < items.size(); i++) {
+            subTotal = subTotal + Double.parseDouble(items.get(i).getItem().getPrice()) * items.get(i).getQuantity();
+        }
+        total.setText("Order Total: $" + df.format(subTotal));
     }
 
     private void getData(DataSnapshot itemData, DataSnapshot cartData) {
