@@ -1,5 +1,6 @@
 package com.example.myapplication;
 
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -14,8 +15,10 @@ import android.widget.Toast;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
@@ -26,7 +29,7 @@ public class ShoppingCart extends AppCompatActivity implements MyRecyclerViewAda
     private FirebaseAuth auth;
     private FirebaseAuth.AuthStateListener authListener;
     private Button checkOut;
-    private ArrayList<Item> items;
+    private ArrayList<ShoppingCartItem> items;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,24 +40,23 @@ public class ShoppingCart extends AppCompatActivity implements MyRecyclerViewAda
         fDatabase = FirebaseDatabase.getInstance();
         dbRef = fDatabase.getReference().child("items");
 
-        /*dbRef.addValueEventListener(new ValueEventListener() {
+        dbRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 // This method is called once with the initial value and again
                 // whenever data at this location is updated.
-                items = getData(dataSnapshot);
-                searchItems = new ArrayList<>();
-                for(Item i : items) {
-                    searchItems.add(i);
+                FirebaseUser user = auth.getCurrentUser();
+                if(user.getUid() != null) {
+                    getData(dataSnapshot.child("items"), dataSnapshot.child("shoppingCarts").child(user.getUid()));
+                    doRecyclerView();
                 }
-                doRecyclerView(dataSnapshot);
             }
 
             @Override
             public void onCancelled(DatabaseError error) {
                 // Failed to read value
             }
-        });*/
+        });
 
         authListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -72,37 +74,39 @@ public class ShoppingCart extends AppCompatActivity implements MyRecyclerViewAda
         };
     }
 
-    private void updateRecyclerView(ArrayList<Item> newItems) {
+    /*private void updateRecyclerView(ArrayList<Item> newItems) {
         RecyclerView recyclerView = findViewById(R.id.rvItems);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
         scAdapter = new ShoppingCartAdapter(this, newItems);
         scAdapter.setClickListener(this);
         recyclerView.setAdapter(scAdapter);
-    }
+    }*/
 
-    private void doRecyclerView(DataSnapshot dataSnapshot){
+    private void doRecyclerView(){
         RecyclerView recyclerView = findViewById(R.id.rvItems);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
-        scAdapter = new ShoppingCartAdapter(this, getData(dataSnapshot));
+        scAdapter = new ShoppingCartAdapter(this, items);
         scAdapter.setClickListener(this);
         recyclerView.setAdapter(scAdapter);
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(), layoutManager.getOrientation());
         recyclerView.addItemDecoration(dividerItemDecoration);
     }
 
-    private ArrayList<Item> getData(DataSnapshot dataSnapshot) {
+    private void getData(DataSnapshot itemData, DataSnapshot cartData) {
         items = new ArrayList<>();
-        for(DataSnapshot ds : dataSnapshot.getChildren()) {
+        for(DataSnapshot ds : cartData.getChildren()) {
             Item item = new Item();
-            item.setName((String)ds.child("name").getValue());
-            item.setDescription((String)ds.child("description").getValue());
-            item.setPrice(ds.child("price").getValue() + "");
-            item.setId(ds.getKey());
-            items.add(item);
+            String itemId = ds.getKey();
+            item.setId(itemId);
+            item.setName(itemData.child(itemId).child("name").getValue().toString());
+            System.out.println(item.getName());
+            item.setPrice(itemData.child(itemId).child("price").getValue().toString());
+            item.setDescription(itemData.child(itemId).child("description").getValue().toString());
+            int quantity = Integer.parseInt(ds.child("quantity").getValue().toString());
+            items.add(new ShoppingCartItem(item, quantity));
         }
-        return items;
     }
 
     @Override
