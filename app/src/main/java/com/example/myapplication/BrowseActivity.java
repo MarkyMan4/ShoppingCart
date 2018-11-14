@@ -24,6 +24,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 
 public class BrowseActivity extends AppCompatActivity implements MyRecyclerViewAdapter.ItemClickListener {
@@ -38,6 +39,8 @@ public class BrowseActivity extends AppCompatActivity implements MyRecyclerViewA
     private ArrayList<Item> items;
     private ArrayList<Item> searchItems;
     private ImageView cartIcon;
+    private boolean isGuest = false;
+    private HashMap<String, Integer> guestCart;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +54,17 @@ public class BrowseActivity extends AppCompatActivity implements MyRecyclerViewA
         go = findViewById(R.id.gobtn);
         searchBar = findViewById(R.id.searchtext);
         cartIcon = findViewById(R.id.viewCart);
+
+        if(auth.getCurrentUser() == null) {
+            isGuest = true;
+        }
+
+        if(getIntent().hasExtra("cart")) {
+            guestCart = (HashMap<String, Integer>) getIntent().getSerializableExtra("cart");
+        }
+        else {
+            guestCart = new HashMap<>();
+        }
 
         setSignOutButton();
 
@@ -117,6 +131,8 @@ public class BrowseActivity extends AppCompatActivity implements MyRecyclerViewA
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(BrowseActivity.this, ShoppingCart.class);
+                if(isGuest)
+                    intent.putExtra("cart", guestCart);
                 startActivity(intent);
             }
         });
@@ -174,6 +190,8 @@ public class BrowseActivity extends AppCompatActivity implements MyRecyclerViewA
         Item item = searchItems.get(position);
         Intent intent = new Intent(BrowseActivity.this, ItemDetailActivity.class);
         intent.putExtra("ID", item.getId());
+        if(isGuest)
+            intent.putExtra("cart", guestCart);
         startActivity(intent);
     }
 

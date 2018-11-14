@@ -22,6 +22,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public class ItemDetailActivity extends AppCompatActivity {
 
@@ -36,12 +38,13 @@ public class ItemDetailActivity extends AppCompatActivity {
     private FirebaseAuth.AuthStateListener authListener;
     private DataSnapshot data;
     private Item item;
+    private boolean isGuest = false;
+    private HashMap<String, Integer> guestCart;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_item_detail);
-
         auth = FirebaseAuth.getInstance();
         fDatabase = FirebaseDatabase.getInstance();
         dbRef = fDatabase.getReference();
@@ -54,6 +57,14 @@ public class ItemDetailActivity extends AppCompatActivity {
         back = findViewById(R.id.backbtn);
         productImage = findViewById(R.id.prodImg);
         final String ID = getIntent().getStringExtra("ID");
+
+        if(auth.getCurrentUser() == null) {
+            isGuest = true;
+        }
+
+        if(isGuest) {
+            guestCart = (HashMap<String, Integer>)getIntent().getSerializableExtra("cart");
+        }
 
         dbRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -82,8 +93,13 @@ public class ItemDetailActivity extends AppCompatActivity {
                 if(!quantity.getText().toString().matches(""))
                     quant = Integer.parseInt(quantity.getText().toString());
                 if(quant > 0) {
-                    FirebaseUser user = auth.getCurrentUser();
-                    dbRef.child("shoppingCarts").child(user.getUid()).child(item.getId()).child("quantity").setValue(quant);
+                    if(isGuest) {
+                        guestCart.put(item.getId(), quant);
+                    }
+                    else {
+                        FirebaseUser user = auth.getCurrentUser();
+                        dbRef.child("shoppingCarts").child(user.getUid()).child(item.getId()).child("quantity").setValue(quant);
+                    }
                     toastMessage("Added " + quant + " " + item.getName() + " to your cart");
                 }
                 else {
@@ -96,6 +112,9 @@ public class ItemDetailActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(ItemDetailActivity.this, BrowseActivity.class);
+                if(isGuest) {
+                    intent.putExtra("cart", guestCart);
+                }
                 startActivity(intent);
             }
         });

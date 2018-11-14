@@ -116,7 +116,7 @@ public class ShoppingCart extends AppCompatActivity implements ShoppingCartAdapt
 
     @Override
     public void onItemClick(View view, int position) {
-
+        toastMessage("clicked");
     }
 
     private void toastMessage(String msg) {
