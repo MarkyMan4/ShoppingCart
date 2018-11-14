@@ -19,14 +19,14 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
-public class ShoppingCart extends AppCompatActivity implements MyRecyclerViewAdapter.ItemClickListener {
+public class ShoppingCart extends AppCompatActivity implements ShoppingCartAdapter.ItemClickListener {
     ShoppingCartAdapter scAdapter;
     private FirebaseDatabase fDatabase;
     private DatabaseReference dbRef;
     private FirebaseAuth auth;
     private FirebaseAuth.AuthStateListener authListener;
     private Button checkOut;
-    private ArrayList<Item> items;
+    private ArrayList<ShoppingCartItem> items;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,7 +72,7 @@ public class ShoppingCart extends AppCompatActivity implements MyRecyclerViewAda
         };
     }
 
-    private void updateRecyclerView(ArrayList<Item> newItems) {
+    private void updateRecyclerView(ArrayList<ShoppingCartItem> newItems) {
         RecyclerView recyclerView = findViewById(R.id.rvItems);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
@@ -92,10 +92,10 @@ public class ShoppingCart extends AppCompatActivity implements MyRecyclerViewAda
         recyclerView.addItemDecoration(dividerItemDecoration);
     }
 
-    private ArrayList<Item> getData(DataSnapshot dataSnapshot) {
+    private ArrayList<ShoppingCartItem> getData(DataSnapshot dataSnapshot) {
         items = new ArrayList<>();
         for(DataSnapshot ds : dataSnapshot.getChildren()) {
-            Item item = new Item();
+            ShoppingCartItem item = new Item();
             item.setName((String)ds.child("name").getValue());
             item.setDescription((String)ds.child("description").getValue());
             item.setPrice(ds.child("price").getValue() + "");

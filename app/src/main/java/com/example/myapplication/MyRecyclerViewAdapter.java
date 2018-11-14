@@ -65,11 +65,6 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
         }
     }
 
-    // convenience method for getting data at click position
-    String getItem(int id) {
-        return itemList.get(id).getName();
-    }
-
     // allows clicks events to be caught
     void setClickListener(ItemClickListener itemClickListener) {
         this.clickListener = itemClickListener;
