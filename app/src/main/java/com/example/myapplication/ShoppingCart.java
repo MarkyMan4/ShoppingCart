@@ -40,7 +40,7 @@ public class ShoppingCart extends AppCompatActivity implements ShoppingCartAdapt
     private DatabaseReference dbRef;
     private FirebaseAuth auth;
     private FirebaseAuth.AuthStateListener authListener;
-    private Button checkOut, promoCodeBtn;
+    private Button checkOut, promoCodeBtn, back;
     private ArrayList<ShoppingCartItem> items;
     private TextView total, promoCode;
     private DataSnapshot snapshot;
@@ -49,6 +49,7 @@ public class ShoppingCart extends AppCompatActivity implements ShoppingCartAdapt
     private AlertDialog dialog;
     private boolean isGuest = false;
     private boolean decorationsSet = false;
+    private HashMap<String, Integer> guestCart;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,10 +62,12 @@ public class ShoppingCart extends AppCompatActivity implements ShoppingCartAdapt
         total = findViewById(R.id.totalPrice);
         promoCodeBtn = findViewById(R.id.promoCodeBtn);
         promoCode = findViewById(R.id.promoCode);
+        back = findViewById(R.id.backBtn);
         itemDiscounts = new HashMap<>();
 
         if(auth.getCurrentUser() == null) {
             isGuest = true;
+            guestCart = (HashMap<String, Integer>) getIntent().getSerializableExtra("cart");
         }
 
         dbRef.addValueEventListener(new ValueEventListener() {
@@ -74,10 +77,13 @@ public class ShoppingCart extends AppCompatActivity implements ShoppingCartAdapt
                 // whenever data at this location is updated.
                 snapshot = dataSnapshot;
                 FirebaseUser user = auth.getCurrentUser();
-                if(user.getUid() != null) {
+                if(!isGuest) {
                     getData(dataSnapshot.child("items"), dataSnapshot.child("shoppingCarts").child(user.getUid()));
-                    doRecyclerView();
                 }
+                else {
+                    getGuestData(dataSnapshot.child("items"));
+                }
+                doRecyclerView();
             }
 
             @Override
@@ -142,6 +148,17 @@ public class ShoppingCart extends AppCompatActivity implements ShoppingCartAdapt
                 }
             }
         });
+
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(ShoppingCart.this, BrowseActivity.class);
+                if(isGuest) {
+                    intent.putExtra("cart", guestCart);
+                }
+                startActivity(intent);
+            }
+        });
     }
 
     private ArrayList<String> getItemIds() {
@@ -203,6 +220,18 @@ public class ShoppingCart extends AppCompatActivity implements ShoppingCartAdapt
         }
     }
 
+    private void getGuestData(DataSnapshot itemData) {
+        items = new ArrayList<>();
+        for(String s : guestCart.keySet()) {
+            Item item = new Item();
+            item.setId(s);
+            item.setName(itemData.child(s).child("name").getValue().toString());
+            item.setPrice(itemData.child(s).child("price").getValue().toString());
+            item.setDescription(itemData.child(s).child("description").getValue().toString());
+            items.add(new ShoppingCartItem(item, guestCart.get(s)));
+        }
+    }
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -238,6 +267,30 @@ public class ShoppingCart extends AppCompatActivity implements ShoppingCartAdapt
                             dbRef.child("shoppingCarts").child(auth.getCurrentUser().getUid()).child(itemId).removeValue();
                         else
                             dbRef.child("shoppingCarts").child(auth.getCurrentUser().getUid()).child(itemId).child("quantity").setValue(newQuant);
+                        toastMessage("Updated Successfully");
+                        dialog.hide();
+                    }
+                    else {
+                        int newQuant = Integer.parseInt(quantityText.getText().toString());
+                        if(newQuant == 0) {
+                            guestCart.remove(itemId);
+                            for(int i = 0; i < items.size(); i++) {
+                                if(items.get(i).getItem().getId().equals(itemId)) {
+                                    items.remove(i);
+                                    break;
+                                }
+                            }
+                        }
+                        else {
+                            guestCart.put(itemId, newQuant);
+                            for(int i = 0; i < items.size(); i++) {
+                                if(items.get(i).getItem().getId().equals(itemId)) {
+                                    items.get(i).setQuantity(newQuant);
+                                    break;
+                                }
+                            }
+                        }
+                        doRecyclerView();
                         toastMessage("Updated Successfully");
                         dialog.hide();
                     }
