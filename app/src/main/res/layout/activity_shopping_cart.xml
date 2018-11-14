@@ -10,7 +10,30 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rvItems"
         android:layout_width="match_parent"
-        android:layout_height="512dp" />
+        android:layout_height="473dp">
+
+    </android.support.v7.widget.RecyclerView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/promoCode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="@string/enter_promo_code"
+            android:inputType="textPersonName"
+            android:importantForAutofill="no" />
+
+        <Button
+            android:id="@+id/promoCodeBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/submit_code" />
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -19,9 +42,10 @@
 
         <TextView
             android:id="@+id/totalPrice"
-            android:layout_width="195dp"
+            android:layout_width="215dp"
             android:layout_height="wrap_content"
-            android:text="TextView" />
+            android:text="@string/textview"
+            android:textSize="18sp" />
 
         <Button
             android:id="@+id/checkout"
