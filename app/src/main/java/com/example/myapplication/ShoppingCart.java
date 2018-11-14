@@ -35,7 +35,7 @@ public class ShoppingCart extends AppCompatActivity implements ShoppingCartAdapt
     protected void onCreate(Bundle savedInstanceState) {
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_browse);
+        setContentView(R.layout.activity_shopping_cart);
         auth = FirebaseAuth.getInstance();
         fDatabase = FirebaseDatabase.getInstance();
         dbRef = fDatabase.getReference().child("items");
