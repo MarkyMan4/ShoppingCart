@@ -54,6 +54,7 @@ public class ShoppingCart extends AppCompatActivity implements ShoppingCartAdapt
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_shopping_cart);
         auth = FirebaseAuth.getInstance();
@@ -143,6 +144,9 @@ public class ShoppingCart extends AppCompatActivity implements ShoppingCartAdapt
                     }
                     if(!foundCode)
                         isValid = false;
+                }
+                else {
+                    isValid = false;
                 }
                 if(!isValid) {
                     toastMessage("Promo Code Not Valid");
