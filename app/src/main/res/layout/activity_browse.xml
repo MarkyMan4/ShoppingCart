@@ -40,6 +40,10 @@
                 android:id="@+id/viewCart"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:adjustViewBounds="true"
+                android:maxWidth="100dp"
+                android:maxHeight="50dp"
+                android:scaleType="fitEnd"
                 android:contentDescription="@string/shopping_cart_png"
                 app:srcCompat="@drawable/shoppingcartpic" />
 

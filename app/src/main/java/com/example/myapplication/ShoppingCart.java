@@ -50,6 +50,7 @@ public class ShoppingCart extends AppCompatActivity implements ShoppingCartAdapt
     private boolean isGuest = false;
     private boolean decorationsSet = false;
     private HashMap<String, Integer> guestCart;
+    private double subTotal = 0.0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +66,7 @@ public class ShoppingCart extends AppCompatActivity implements ShoppingCartAdapt
         promoCode = findViewById(R.id.promoCode);
         back = findViewById(R.id.backBtn);
         itemDiscounts = new HashMap<>();
+        checkOut = findViewById(R.id.checkout);
 
         if(auth.getCurrentUser() == null) {
             isGuest = true;
@@ -167,6 +169,17 @@ public class ShoppingCart extends AppCompatActivity implements ShoppingCartAdapt
                 startActivity(intent);
             }
         });
+
+        checkOut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(ShoppingCart.this, CheckoutActivity.class);
+                //make sure cart is not empty when user tries to checkout
+                //pass cart total to checkout activity
+                intent.putExtra("total", subTotal);
+                startActivity(intent);
+            }
+        });
     }
 
     private ArrayList<String> getItemIds() {
@@ -203,7 +216,7 @@ public class ShoppingCart extends AppCompatActivity implements ShoppingCartAdapt
 
     private void updatePrice() {
         DecimalFormat df = new DecimalFormat("0.00");
-        double subTotal = 0;
+        subTotal = 0;
         for (int i = 0; i < items.size(); i++) {
             Item item = items.get(i).getItem();
             double itemPrice = Double.parseDouble(item.getPrice());

@@ -20,8 +20,11 @@
         <activity android:name=".BrowseActivity" />
         <activity android:name=".AdminDashboard" />
         <activity android:name=".ItemDetailActivity" />
-        <activity android:name=".ShoppingCart" android:windowSoftInputMode="adjustPan"/>
-        <activity android:name=".ShoppingCartAdapter"></activity>
+        <activity
+            android:name=".ShoppingCart"
+            android:windowSoftInputMode="adjustPan" />
+        <activity android:name=".ShoppingCartAdapter" />
+        <activity android:name=".CheckoutActivity"></activity>
     </application>
 
 </manifest>
