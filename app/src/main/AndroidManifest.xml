@@ -25,7 +25,8 @@
             android:windowSoftInputMode="adjustPan" />
         <activity android:name=".ShoppingCartAdapter" />
         <activity android:name=".CheckoutActivity" />
-        <activity android:name=".EditItemActivity"></activity>
+        <activity android:name=".EditItemActivity" />
+        <activity android:name=".NewItemActivity"></activity>
     </application>
 
 </manifest>

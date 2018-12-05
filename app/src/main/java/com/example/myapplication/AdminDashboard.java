@@ -42,6 +42,7 @@ public class AdminDashboard extends AppCompatActivity implements MyRecyclerViewA
     private Button close;
     private Button finish;
     private Button cancel;
+    private Button newItemButton;
     private Spinner promoSpinner;
     private Spinner itemSpinner;
     private EditText percentInput;
@@ -60,6 +61,7 @@ public class AdminDashboard extends AppCompatActivity implements MyRecyclerViewA
 
         signOut = findViewById(R.id.signout);
         addCode = findViewById(R.id.addcode);
+        newItemButton = findViewById(R.id.add_item_btn);
         mAuth = FirebaseAuth.getInstance();
         fDatabase = FirebaseDatabase.getInstance();
         dbRef = fDatabase.getReference();
@@ -96,6 +98,14 @@ public class AdminDashboard extends AppCompatActivity implements MyRecyclerViewA
 
             }
         });
+
+        newItemButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(AdminDashboard.this, NewItemActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     private ArrayList<Item> getData(DataSnapshot dataSnapshot) {
@@ -106,7 +116,6 @@ public class AdminDashboard extends AppCompatActivity implements MyRecyclerViewA
             item.setDescription((String)ds.child("description").getValue());
             item.setPrice(ds.child("price").getValue().toString());
             item.setId(ds.getKey());
-            System.out.println(item.getId() + " -- " + item.getName() +", " + item.getPrice() + ", " + item.getDescription() + "#################################################");
             items.add(item);
         }
         return items;
