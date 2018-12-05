@@ -5,6 +5,9 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -27,7 +30,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
-public class AdminDashboard extends AppCompatActivity {
+public class AdminDashboard extends AppCompatActivity implements MyRecyclerViewAdapter.ItemClickListener {
 
     private Button signOut;
     private Button addCode;
@@ -46,7 +49,9 @@ public class AdminDashboard extends AppCompatActivity {
     private EditText endDate;
     private EditText codeName;
     private AlertDialog.Builder dialogBuilder;
+    private ArrayList<Item> items;
     private AlertDialog dialog;
+    private MyRecyclerViewAdapter rvAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +86,9 @@ public class AdminDashboard extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 data = dataSnapshot;
+                items = getData(dataSnapshot.child("items"));
+                updateRecyclerView(items);
+                doRecyclerView(dataSnapshot.child("items"));
             }
 
             @Override
@@ -88,6 +96,40 @@ public class AdminDashboard extends AppCompatActivity {
 
             }
         });
+    }
+
+    private ArrayList<Item> getData(DataSnapshot dataSnapshot) {
+        items = new ArrayList<>();
+        for(DataSnapshot ds : dataSnapshot.getChildren()) {
+            Item item = new Item();
+            item.setName((String)ds.child("name").getValue());
+            item.setDescription((String)ds.child("description").getValue());
+            item.setPrice(ds.child("price").getValue().toString());
+            item.setId(ds.getKey());
+            System.out.println(item.getId() + " -- " + item.getName() +", " + item.getPrice() + ", " + item.getDescription() + "#################################################");
+            items.add(item);
+        }
+        return items;
+    }
+
+    private void updateRecyclerView(ArrayList<Item> newItems) {
+        RecyclerView recyclerView = findViewById(R.id.rvItems);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(layoutManager);
+        rvAdapter = new MyRecyclerViewAdapter(this, newItems);
+        rvAdapter.setClickListener(this);
+        recyclerView.setAdapter(rvAdapter);
+    }
+
+    private void doRecyclerView(DataSnapshot dataSnapshot){
+        RecyclerView recyclerView = findViewById(R.id.rvItems);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(layoutManager);
+        rvAdapter = new MyRecyclerViewAdapter(this, getData(dataSnapshot));
+        rvAdapter.setClickListener(this);
+        recyclerView.setAdapter(rvAdapter);
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(), layoutManager.getOrientation());
+        recyclerView.addItemDecoration(dividerItemDecoration);
     }
 
     private void selectPromotionDialog() {
@@ -186,6 +228,14 @@ public class AdminDashboard extends AppCompatActivity {
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
         FirebaseUser currentUser = mAuth.getCurrentUser();
+    }
+
+    @Override
+    public void onItemClick(View view, int position) {
+        Item item = items.get(position);
+        Intent intent = new Intent(AdminDashboard.this, EditItemActivity.class);
+        intent.putExtra("ID", item.getId());
+        startActivity(intent);
     }
 
     private void toastMessage(String msg) {
