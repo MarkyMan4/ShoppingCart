@@ -26,6 +26,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class CheckoutActivity extends AppCompatActivity {
 
@@ -164,8 +165,16 @@ public class CheckoutActivity extends AppCompatActivity {
                             histItem.setItemId(id);
                             historyItems.add(histItem);
                         }
+                        String orderId = auth.getCurrentUser().getUid();
+                        if(snapshot.child("purchaseHistory").hasChild(auth.getCurrentUser().getUid())) {
+                            orderId = snapshot.child("purchaseHistory").child(auth.getCurrentUser().getUid()).getChildrenCount() + orderId;
+                        }
+                        else {
+                            orderId = "0" + orderId;
+                        }
+                        dbRef.child("purchaseHistory").child(auth.getCurrentUser().getUid()).child(orderId).child("date").setValue(new Date().toString());
                         for(HistoryItem hi : historyItems) {
-                            dbRef.child("purchaseHistory").child(auth.getCurrentUser().getUid()).child(hi.getItemId()).setValue(hi);
+                            dbRef.child("purchaseHistory").child(auth.getCurrentUser().getUid()).child(orderId).child(hi.getItemId()).setValue(hi);
                         }
                         dbRef.child("shoppingCarts").child(auth.getCurrentUser().getUid()).removeValue();
                     }
