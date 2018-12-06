@@ -31,7 +31,6 @@ public class ItemDetailActivity extends AppCompatActivity {
     private EditText quantity;
     private Button addToCart, back;
     private ImageView productImage;
-
     private FirebaseDatabase fDatabase;
     private DatabaseReference dbRef;
     private FirebaseAuth auth;

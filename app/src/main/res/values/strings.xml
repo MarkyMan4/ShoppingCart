@@ -15,4 +15,10 @@
     <string name="enter_promo_code">Enter Promo Code</string>
     <string name="submit_code">Submit Code</string>
     <string name="back_to_browse">Back To Browse</string>
+    <string name="name_on_card">Name on Card</string>
+    <string name="card_number">Card Number</string>
+    <string name="expiration_date">Expiration Date</string>
+    <string name="save_my_payment_information">Save my payment information</string>
+    <string name="done">Done</string>
+    <string name="mm_yy">MM/YY</string>
 </resources>
