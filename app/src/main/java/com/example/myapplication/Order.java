@@ -6,10 +6,10 @@ import java.util.Date;
 public class Order {
 
     private String orderId;
-    private Date date;
+    private String date;
     private ArrayList<HistoryItem> histItems;
 
-    public Order(String orderId, Date date, ArrayList<HistoryItem> histItems) {
+    public Order(String orderId, String date, ArrayList<HistoryItem> histItems) {
         this.orderId = orderId;
         this.date = date;
         this.histItems = histItems;
@@ -23,11 +23,11 @@ public class Order {
         this.orderId = orderId;
     }
 
-    public Date getDate() {
+    public String getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(String date) {
         this.date = date;
     }
 

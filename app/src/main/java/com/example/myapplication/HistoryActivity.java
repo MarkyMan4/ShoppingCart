@@ -13,6 +13,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 public class HistoryActivity extends AppCompatActivity {
@@ -21,6 +22,7 @@ public class HistoryActivity extends AppCompatActivity {
     private DatabaseReference dbRef;
     private FirebaseAuth auth;
     private FirebaseAuth.AuthStateListener authListener;
+    private ArrayList<Order> orders;
     private ArrayList<HistoryItem> historyItems;
 
     @Override
@@ -31,6 +33,7 @@ public class HistoryActivity extends AppCompatActivity {
         auth = FirebaseAuth.getInstance();
         fDatabase = FirebaseDatabase.getInstance();
         dbRef = fDatabase.getReference();
+        orders = new ArrayList<>();
         historyItems = new ArrayList<>();
 
         authListener = new FirebaseAuth.AuthStateListener() {
@@ -43,7 +46,6 @@ public class HistoryActivity extends AppCompatActivity {
                 }else{
                     //user is signed out
                     Log.d("Here: ", "user not signed in");
-
                 }
             }
         };
@@ -63,7 +65,10 @@ public class HistoryActivity extends AppCompatActivity {
     }
 
     private void getHistory(DataSnapshot dataSnapshot) {
+        SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy");
         for(DataSnapshot ds : dataSnapshot.getChildren()) {
+            String orderId = ds.getKey();
+
             String id = ds.getKey();
             String description = ds.child("description").getValue().toString();
             String name = ds.child("name").getValue().toString();
