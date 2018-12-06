@@ -24,7 +24,7 @@ public class OrderHistRows extends RecyclerView.Adapter<OrderHistRows.ViewHolder
     // inflates the row layout from xml when needed
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = myInflater.inflate(R.layout.rvitems_row, parent, false);
+        View view = myInflater.inflate(R.layout.activity_order_hist_rows, parent, false);
         return new ViewHolder(view);
     }
 

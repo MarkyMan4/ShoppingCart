@@ -3,7 +3,11 @@ package com.example.myapplication;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -16,14 +20,14 @@ import com.google.firebase.database.ValueEventListener;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
-public class HistoryActivity extends AppCompatActivity {
+public class HistoryActivity extends AppCompatActivity implements OrderHistRows.ItemClickListener{
 
+    private OrderHistRows orderAdapter;
     private FirebaseDatabase fDatabase;
     private DatabaseReference dbRef;
     private FirebaseAuth auth;
     private FirebaseAuth.AuthStateListener authListener;
     private ArrayList<Order> orders;
-    private ArrayList<HistoryItem> historyItems;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,7 +38,6 @@ public class HistoryActivity extends AppCompatActivity {
         fDatabase = FirebaseDatabase.getInstance();
         dbRef = fDatabase.getReference();
         orders = new ArrayList<>();
-        historyItems = new ArrayList<>();
 
         authListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -65,28 +68,50 @@ public class HistoryActivity extends AppCompatActivity {
     }
 
     private void getHistory(DataSnapshot dataSnapshot) {
-        SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy");
         for(DataSnapshot ds : dataSnapshot.getChildren()) {
             String orderId = ds.getKey();
-
-            String id = ds.getKey();
-            String description = ds.child("description").getValue().toString();
-            String name = ds.child("name").getValue().toString();
-            double price = Double.parseDouble(ds.child("price").getValue().toString());
-            int quantity = Integer.parseInt(ds.child("quantity").getValue().toString());
-            HistoryItem historyItem = new HistoryItem(description, name, price, quantity);
-            historyItem.setItemId(id);
-            historyItems.add(historyItem);
+            String date = ds.child("date").getValue().toString();
+            ArrayList<HistoryItem> historyItems = new ArrayList<>();
+            for(DataSnapshot d : ds.getChildren()) {
+                if(!d.getKey().equals("date")) {
+                    String id = d.getKey();
+                    String description = d.child("description").getValue().toString();
+                    String name = d.child("name").getValue().toString();
+                    double price = Double.parseDouble(d.child("price").getValue().toString());
+                    int quantity = Integer.parseInt(d.child("quantity").getValue().toString());
+                    HistoryItem historyItem = new HistoryItem(description, name, price, quantity);
+                    historyItem.setItemId(id);
+                    historyItems.add(historyItem);
+                }
+            }
+            orders.add(new Order(orderId, date, historyItems));
         }
     }
 
     private void doRecyclerView() {
+        System.out.println("##############################################################");
+        for(Order o : orders) {
+            System.out.println(o.getOrderId() + " -- " + o.getDate());
+        }
         //code to create and populate recycler view goes here...
+        RecyclerView recyclerView = findViewById(R.id.order_items);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(layoutManager);
+        orderAdapter = new OrderHistRows(this, orders);
+        orderAdapter.setClickListener(this);
+        recyclerView.setAdapter(orderAdapter);
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(), layoutManager.getOrientation());
+        recyclerView.addItemDecoration(dividerItemDecoration);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
         auth.addAuthStateListener(authListener);
+    }
+
+    @Override
+    public void onItemClick(View view, int position) {
+
     }
 }

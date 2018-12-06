@@ -25,6 +25,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -172,7 +173,8 @@ public class CheckoutActivity extends AppCompatActivity {
                         else {
                             orderId = "0" + orderId;
                         }
-                        dbRef.child("purchaseHistory").child(auth.getCurrentUser().getUid()).child(orderId).child("date").setValue(new Date().toString());
+                        SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy");
+                        dbRef.child("purchaseHistory").child(auth.getCurrentUser().getUid()).child(orderId).child("date").setValue(df.format(new Date()));
                         for(HistoryItem hi : historyItems) {
                             dbRef.child("purchaseHistory").child(auth.getCurrentUser().getUid()).child(orderId).child(hi.getItemId()).setValue(hi);
                         }
