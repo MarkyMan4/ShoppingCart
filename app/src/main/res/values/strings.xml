@@ -21,4 +21,12 @@
     <string name="save_my_payment_information">Save my payment information</string>
     <string name="done">Done</string>
     <string name="mm_yy">MM/YY</string>
+    <string name="item_name">Item Name</string>
+    <string name="price">Price</string>
+    <string name="_0_00">$0.00</string>
+    <string name="edit_price">Edit Price</string>
+    <string name="description">Description</string>
+    <string name="desc">desc</string>
+    <string name="edit_description">Edit Description</string>
+    <string name="delete_item">Delete Item</string>
 </resources>
