@@ -41,6 +41,15 @@
             android:textAllCaps="false"
             android:textSize="24sp" />
 
+        <Button
+            android:id="@+id/history_btn"
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="View Your Order History"
+            android:textAllCaps="false"
+            android:textSize="24sp" />
+
     </LinearLayout>
 
     <LinearLayout

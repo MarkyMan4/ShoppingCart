@@ -25,6 +25,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 
 public class CheckoutActivity extends AppCompatActivity {
 
@@ -36,7 +37,7 @@ public class CheckoutActivity extends AppCompatActivity {
     private AlertDialog dialog;
     private LinearLayout firstScreen;
     private LinearLayout secondScreen;
-    private Button billingBtn, shippingBtn, paymentBtn, placeOrder, backToBrowse;
+    private Button billingBtn, shippingBtn, paymentBtn, placeOrder, backToBrowse, historyButton;
     private ImageView billingCheck, shippingCheck, paymentCheck;
     private TextView subtotalText, taxText, shippingText, totalText;
     private boolean billingDone, shippingDone, paymentDone;
@@ -48,6 +49,7 @@ public class CheckoutActivity extends AppCompatActivity {
     private double subtotal = 0.0;
     private double tax = 0.0;
     private boolean dataSaved = false;
+    private ArrayList<HistoryItem> historyItems;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +66,7 @@ public class CheckoutActivity extends AppCompatActivity {
         paymentBtn = findViewById(R.id.paymentInfoBtn);
         placeOrder = findViewById(R.id.placeOrderBtn);
         backToBrowse = findViewById(R.id.backBtn);
+        historyButton = findViewById(R.id.history_btn);
         billingCheck = findViewById(R.id.billingCheckImg);
         shippingCheck = findViewById(R.id.shippingCheckImg);
         paymentCheck = findViewById(R.id.paymentCheckImg);
@@ -72,6 +75,7 @@ public class CheckoutActivity extends AppCompatActivity {
         shippingText = findViewById(R.id.shipping_text);
         totalText = findViewById(R.id.total_text);
         shippingState = "";
+        historyItems = new ArrayList<>();
 
         if(auth.getCurrentUser() == null) {
             isGuest = true;
@@ -80,6 +84,10 @@ public class CheckoutActivity extends AppCompatActivity {
                 tax = subtotal * getSalesTax(shippingState);
             }
             updateLabels(subtotal, tax, shippingCost, subtotal + tax + shippingCost);
+        }
+
+        if(isGuest) {
+            historyButton.setVisibility(View.INVISIBLE);
         }
 
         authListener = new FirebaseAuth.AuthStateListener() {
@@ -144,8 +152,23 @@ public class CheckoutActivity extends AppCompatActivity {
             public void onClick(View view) {
                 // first make sure all information has been entered
                 if(billingCheck.getVisibility() == View.VISIBLE && shippingCheck.getVisibility() == View.VISIBLE && paymentCheck.getVisibility() == View.VISIBLE) {
-                    if(!isGuest)
+                    if(!isGuest) {
+                        DataSnapshot cart = snapshot.child("shoppingCarts").child(auth.getCurrentUser().getUid());
+                        for(DataSnapshot ds : cart.getChildren()) {
+                            String id = ds.getKey();
+                            int quantity = Integer.parseInt(ds.child("quantity").getValue().toString());
+                            String description = snapshot.child("items").child(id).child("description").getValue().toString();
+                            String name = snapshot.child("items").child(id).child("name").getValue().toString();
+                            double price = Double.parseDouble(snapshot.child("items").child(id).child("price").getValue().toString());
+                            HistoryItem histItem = new HistoryItem(description, name, price, quantity);
+                            histItem.setItemId(id);
+                            historyItems.add(histItem);
+                        }
+                        for(HistoryItem hi : historyItems) {
+                            dbRef.child("purchaseHistory").child(auth.getCurrentUser().getUid()).child(hi.getItemId()).setValue(hi);
+                        }
                         dbRef.child("shoppingCarts").child(auth.getCurrentUser().getUid()).removeValue();
+                    }
                     firstScreen.setVisibility(View.INVISIBLE);
                     secondScreen.setVisibility(View.VISIBLE);
                 }
@@ -159,6 +182,14 @@ public class CheckoutActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(CheckoutActivity.this, BrowseActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        historyButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(CheckoutActivity.this, HistoryActivity.class);
                 startActivity(intent);
             }
         });
