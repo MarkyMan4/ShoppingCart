@@ -7,8 +7,8 @@
     tools:context=".EditItemActivity">
 
     <LinearLayout
-        android:layout_width="395dp"
-        android:layout_height="643dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
@@ -33,8 +33,8 @@
             android:id="@+id/textView16"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Price"
             android:layout_marginTop="15dp"
+            android:text="Price"
             android:textSize="24sp"
             android:textStyle="bold" />
 
@@ -59,8 +59,8 @@
             android:id="@+id/textView15"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Description"
             android:layout_marginTop="15dp"
+            android:text="Description"
             android:textSize="24sp"
             android:textStyle="bold" />
 
