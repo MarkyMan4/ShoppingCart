@@ -25,7 +25,7 @@
         <activity android:name=".CheckoutActivity" />
         <activity android:name=".EditItemActivity" />
         <activity android:name=".NewItemActivity" />
-        <activity android:name=".HistoryActivity"></activity>
+        <activity android:name=".HistoryActivity" />
     </application>
 
 </manifest>
