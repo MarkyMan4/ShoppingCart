@@ -1,6 +1,7 @@
 package com.example.myapplication;
 
 import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
@@ -28,6 +29,8 @@ public class HistoryActivity extends AppCompatActivity implements OrderHistRows.
     private FirebaseAuth auth;
     private FirebaseAuth.AuthStateListener authListener;
     private ArrayList<Order> orders;
+    private AlertDialog.Builder dialogBuilder;
+    private AlertDialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,10 +92,6 @@ public class HistoryActivity extends AppCompatActivity implements OrderHistRows.
     }
 
     private void doRecyclerView() {
-        System.out.println("##############################################################");
-        for(Order o : orders) {
-            System.out.println(o.getOrderId() + " -- " + o.getDate());
-        }
         //code to create and populate recycler view goes here...
         RecyclerView recyclerView = findViewById(R.id.order_items);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
@@ -104,6 +103,15 @@ public class HistoryActivity extends AppCompatActivity implements OrderHistRows.
         recyclerView.addItemDecoration(dividerItemDecoration);
     }
 
+    private void createPopup() {
+        dialogBuilder = new AlertDialog.Builder(this);
+        View view = getLayoutInflater().inflate(R.layout.popup_order_history, null);
+
+        dialogBuilder.setView(view);
+        dialog = dialogBuilder.create();
+        dialog.show();
+    }
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -112,6 +120,6 @@ public class HistoryActivity extends AppCompatActivity implements OrderHistRows.
 
     @Override
     public void onItemClick(View view, int position) {
-
+        createPopup();
     }
 }
