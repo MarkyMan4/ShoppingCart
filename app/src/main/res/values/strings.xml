@@ -29,4 +29,9 @@
     <string name="desc">desc</string>
     <string name="edit_description">Edit Description</string>
     <string name="delete_item">Delete Item</string>
+    <string name="profile">Profile</string>
+    <string name="button">Button</string>
+    <string name="order_history">Order History</string>
+    <string name="shipping_address">Shipping Address</string>
+    <string name="payment_card">Payment Card</string>
 </resources>

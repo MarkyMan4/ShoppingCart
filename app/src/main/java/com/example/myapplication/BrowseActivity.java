@@ -75,6 +75,7 @@ public class BrowseActivity extends AppCompatActivity implements MyRecyclerViewA
                 toastMessage("Signed Out");
                 Intent intent = new Intent(BrowseActivity.this, MainActivity.class);
                 startActivity(intent);
+
                 finish();
             }
         });
@@ -143,6 +144,8 @@ public class BrowseActivity extends AppCompatActivity implements MyRecyclerViewA
         //if no user is signed in, the sign out button is appropriately renamed 'Exit'
         if(user==null){
             signOut.setText("Exit");
+            Button profile = findViewById(R.id.userProfile);
+            profile.setVisibility(View.INVISIBLE);
         }
     }
 
@@ -197,5 +200,11 @@ public class BrowseActivity extends AppCompatActivity implements MyRecyclerViewA
 
     private void toastMessage(String msg) {
         Toast.makeText(BrowseActivity.this, msg, Toast.LENGTH_SHORT).show();
+    }
+
+    //TODO: Should not display button if guest
+    public void viewProfile(View view) {
+        Intent intent = new Intent(BrowseActivity.this, HistoryActivity.class);
+        startActivity(intent);
     }
 }

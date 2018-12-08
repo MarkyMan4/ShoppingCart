@@ -122,4 +122,12 @@ public class HistoryActivity extends AppCompatActivity implements OrderHistRows.
     public void onItemClick(View view, int position) {
         createPopup();
     }
+
+    public void shippingClick(View view) {
+        //TODO: code to launch edit shipping address popup
+    }
+
+    public void paymentClick(View view) {
+        //TODO: code to launch edit payment card popup
+    }
 }

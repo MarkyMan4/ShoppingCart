@@ -174,7 +174,7 @@ public class ShoppingCart extends AppCompatActivity implements ShoppingCartAdapt
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(ShoppingCart.this, CheckoutActivity.class);
-                //make sure cart is not empty when user tries to checkout
+                //TODO: make sure cart is not empty when user tries to checkout
                 //pass cart total to checkout activity
                 intent.putExtra("total", subTotal);
                 startActivity(intent);

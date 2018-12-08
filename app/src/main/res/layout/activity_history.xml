@@ -7,31 +7,57 @@
     tools:context=".HistoryActivity"
     tools:layout_editor_absoluteY="25dp">
 
+    <!--TODO: Back Button and search-bar?-->
+    <Button
+        android:id="@+id/shippingAddress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:onClick="shippingClick"
+        android:text="@string/shipping_address"
+        app:layout_constraintBottom_toTopOf="@+id/orderHistory"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <Button
+        android:id="@+id/paymentCard"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="36dp"
+        android:layout_marginLeft="36dp"
+        android:layout_marginTop="8dp"
+        android:onClick="paymentClick"
+        android:text="@string/payment_card"
+        app:layout_constraintBottom_toTopOf="@+id/orderHistory"
+        app:layout_constraintStart_toEndOf="@+id/shippingAddress"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0" />
+
     <TextView
         android:id="@+id/orderHistory"
-        android:layout_width="0dp"
+        android:layout_width="344dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
-        android:text="Order History"
+        android:text="@string/order_history"
         android:textSize="30sp"
         app:layout_constraintBottom_toTopOf="@+id/order_items"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/order_items"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="344dp"
+        android:layout_height="520dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
-        android:layout_marginBottom="6dp"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/orderHistory" />

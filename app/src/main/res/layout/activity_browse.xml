@@ -36,15 +36,23 @@
                 android:layout_marginRight="24dp"
                 android:text="@string/sign_out" />
 
+            <Button
+                android:id="@+id/userProfile"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="viewProfile"
+                android:text="@string/profile"
+                android:visibility="visible" />
+
             <ImageView
                 android:id="@+id/viewCart"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:adjustViewBounds="true"
+                android:contentDescription="@string/shopping_cart_png"
                 android:maxWidth="100dp"
                 android:maxHeight="50dp"
                 android:scaleType="fitEnd"
-                android:contentDescription="@string/shopping_cart_png"
                 app:srcCompat="@drawable/shoppingcartpic" />
 
         </LinearLayout>
@@ -87,7 +95,9 @@
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.859" />
+            app:layout_constraintVertical_bias="0.859" >
+
+        </android.support.v7.widget.RecyclerView>
 
     </LinearLayout>
 

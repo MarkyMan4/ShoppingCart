@@ -1,6 +1,7 @@
 package com.example.myapplication;
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.media.Image;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -73,6 +74,9 @@ public class ItemDetailActivity extends AppCompatActivity {
                 data = dataSnapshot;
                 item = getItemData(ID);
                 title.setText(item.getName());
+                /*String mDrawableName = "myappicon";
+                int resID = getResources().getIdentifier(mDrawableName , "drawable", getPackageName());
+                productImage.setImageResource(R.drawable.coffemaker);*/
                 DecimalFormat df = new DecimalFormat("0.00");
                 priceLabel.setText("Price: $" + df.format(Double.parseDouble(item.getPrice())));
                 description.setText(item.getDescription());
