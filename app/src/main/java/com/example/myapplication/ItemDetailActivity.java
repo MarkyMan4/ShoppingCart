@@ -26,6 +26,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+//class that is the activity that displays the details for a specific item.
 public class ItemDetailActivity extends AppCompatActivity {
 
     private TextView title, priceLabel, description;
@@ -66,6 +67,8 @@ public class ItemDetailActivity extends AppCompatActivity {
             guestCart = (HashMap<String, Integer>)getIntent().getSerializableExtra("cart");
         }
 
+        //event listener for data change in the data base. Updates the display if data is changed in
+        //the database.
         dbRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -90,6 +93,8 @@ public class ItemDetailActivity extends AppCompatActivity {
             }
         });
 
+        //click listener for add to cart button. Adds the amount that is in the quantity field of
+        // the item whose page is currently displayed to the user's shopping cart.
         addToCart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -112,6 +117,7 @@ public class ItemDetailActivity extends AppCompatActivity {
             }
         });
 
+        //click listener for the back button. Takes the user back to the browse activity.
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -139,6 +145,8 @@ public class ItemDetailActivity extends AppCompatActivity {
         };
     }
 
+    //method that creates and returns an item object containing the data of the item specified by
+    // the itemID parameter.
     private Item getItemData(String itemId) {
         Item item = new Item();
         DataSnapshot itemData = data.child("items").child(itemId);
@@ -155,6 +163,7 @@ public class ItemDetailActivity extends AppCompatActivity {
         auth.addAuthStateListener(authListener);
     }
 
+    //generic method to make a toast method.
     private void toastMessage(String msg) {
         Toast.makeText(ItemDetailActivity.this, msg, Toast.LENGTH_SHORT).show();
     }

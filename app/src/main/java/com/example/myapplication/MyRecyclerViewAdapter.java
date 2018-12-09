@@ -9,6 +9,7 @@ import android.widget.TextView;
 import java.text.DecimalFormat;
 import java.util.List;
 
+//adapter class for the recycler view in browse activity.
 public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAdapter.ViewHolder> {
 
     private List<Item> itemList;

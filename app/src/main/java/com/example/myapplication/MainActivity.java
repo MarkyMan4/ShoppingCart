@@ -27,6 +27,7 @@ import com.google.firebase.database.ValueEventListener;
 //import com.google.firebase.database.DatabaseReference;
 //import com.google.firebase.database.FirebaseDatabase;
 
+//Main activity of our project. This is the activity for the login screen.
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
@@ -96,6 +97,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        //Sets click listener for signIn button. On click method retrieves username and password
+        //then tries to sign them in with firebase.
         signIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -128,6 +131,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        //Sets click listener for sign up button. Launches popup that contains sign up fields.
         signUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -142,6 +146,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        //SEts click listener for button to continue as a guest. Starts the next activity with out
+        //signing the user in.
         guest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -151,6 +157,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    //Method that creates the popup window for signing up to be a registered user.
     private void createPopupDialog() {
         dialogBuilder = new AlertDialog.Builder(this);
         View view = getLayoutInflater().inflate(R.layout.signup_popup, null);
@@ -163,6 +170,8 @@ public class MainActivity extends AppCompatActivity {
         dialogBuilder.setView(view);
         dialog = dialogBuilder.create();
         dialog.show();
+
+        //sets click listener for add user button and calls addUser method.
         addBtn.setOnClickListener(new View.OnClickListener(){
 
             @Override
@@ -180,10 +189,12 @@ public class MainActivity extends AppCompatActivity {
         mAuth.addAuthStateListener(mAuthListener);
     }
 
+    //generic method to make a toast message.
     private void toastMessage(String msg) {
         Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
     }
 
+    //method that adds a user to the database. Is passed user input from popup window.
     public void addUser(final String email, String password, final String first, final String last) {
         mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(MainActivity.this, new OnCompleteListener<AuthResult>() {
             @Override

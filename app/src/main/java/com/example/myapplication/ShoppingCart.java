@@ -34,6 +34,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
+//activity for displaying the users shopping cart.
 public class ShoppingCart extends AppCompatActivity implements ShoppingCartAdapter.ItemClickListener {
     ShoppingCartAdapter scAdapter;
     private FirebaseDatabase fDatabase;
@@ -73,6 +74,7 @@ public class ShoppingCart extends AppCompatActivity implements ShoppingCartAdapt
             guestCart = (HashMap<String, Integer>) getIntent().getSerializableExtra("cart");
         }
 
+        //event listener for data change in the database. Updates page if there is a change in data.
         dbRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -110,6 +112,8 @@ public class ShoppingCart extends AppCompatActivity implements ShoppingCartAdapt
             }
         };
 
+        //sets click listener for promo code button. Validates and applies promo code to shopping
+        //cart if valid.
         promoCodeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -159,6 +163,7 @@ public class ShoppingCart extends AppCompatActivity implements ShoppingCartAdapt
             }
         });
 
+        //sets click listener for back button. Takes the user back to the browse screen.
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -170,6 +175,7 @@ public class ShoppingCart extends AppCompatActivity implements ShoppingCartAdapt
             }
         });
 
+        //sets click listener for checkout button.
         checkOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

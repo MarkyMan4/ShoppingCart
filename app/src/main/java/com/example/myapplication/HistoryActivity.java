@@ -123,7 +123,6 @@ public class HistoryActivity extends AppCompatActivity implements OrderHistRows.
 
     @Override
     public void onItemClick(View view, int position) {
-//        createPopup();
         Intent intent = new Intent(HistoryActivity.this, OrderHistoryItemActivity.class);
         intent.putExtra("id", orders.get(position).getOrderId());
         startActivity(intent);
@@ -249,5 +248,8 @@ public class HistoryActivity extends AppCompatActivity implements OrderHistRows.
 
     private void toastMessage(String msg) {
         Toast.makeText(HistoryActivity.this, msg, Toast.LENGTH_SHORT).show();
+    }
+
+    public void billingClick(View view) {
     }
 }
