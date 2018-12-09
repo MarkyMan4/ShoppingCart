@@ -1,5 +1,6 @@
 package com.example.myapplication;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
@@ -104,5 +105,11 @@ public class OrderHistoryItemActivity  extends AppCompatActivity implements Popu
     @Override
     public void onItemClick(View view, int position) {
 
+    }
+
+    public void backClicked(View view) {
+        finish();
+//        Intent intent = new Intent(OrderHistoryItemActivity.this, HistoryActivity.class);
+//        startActivity(intent);
     }
 }

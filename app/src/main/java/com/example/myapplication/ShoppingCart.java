@@ -175,7 +175,7 @@ public class ShoppingCart extends AppCompatActivity implements ShoppingCartAdapt
             }
         });
 
-        //sets click listener for checkout button.
+        //sets click listener for checkout button. Starts activity to checkout.
         checkOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -214,6 +214,7 @@ public class ShoppingCart extends AppCompatActivity implements ShoppingCartAdapt
         }
     }
 
+    //gets the id of every item in the users shopping cart.
     private ArrayList<String> getItemIds() {
         ArrayList<String> itemIds = new ArrayList<>();
         for(ShoppingCartItem item : items) {
@@ -237,6 +238,7 @@ public class ShoppingCart extends AppCompatActivity implements ShoppingCartAdapt
         updatePrice();
     }
 
+    //method that updates the price displayed in the shopping cart activity.
     private void updatePrice() {
         DecimalFormat df = new DecimalFormat("0.00");
         subTotal = 0;
@@ -250,6 +252,7 @@ public class ShoppingCart extends AppCompatActivity implements ShoppingCartAdapt
         total.setText("Order Total: $" + df.format(subTotal));
     }
 
+    //fills the items array if item instances for each item in the users shopping cart.
     private void getData(DataSnapshot itemData, DataSnapshot cartData) {
         items = new ArrayList<>();
         for(DataSnapshot ds : cartData.getChildren()) {
@@ -264,6 +267,7 @@ public class ShoppingCart extends AppCompatActivity implements ShoppingCartAdapt
         }
     }
 
+    //fills items array with item instances for each item in the guest users shopping cart.
     private void getGuestData(DataSnapshot itemData) {
         items = new ArrayList<>();
         for(String s : guestCart.keySet()) {
@@ -282,12 +286,15 @@ public class ShoppingCart extends AppCompatActivity implements ShoppingCartAdapt
         auth.addAuthStateListener(authListener);
     }
 
+    //method is called when an item in the shopping cart recycler view is clicked. Launches popup to
+    //edit clicked the clicked items quantity.
     @Override
     public void onItemClick(View view, int position) {
         ShoppingCartItem item = items.get(position);
         createQuantityPopup(item.getItem().getId());
     }
 
+    //creates the edit quantity popup.
     private void createQuantityPopup(final String itemId) {
         dialogBuilder = new AlertDialog.Builder(this);
         View view = getLayoutInflater().inflate(R.layout.quantity_popup, null);
@@ -343,6 +350,7 @@ public class ShoppingCart extends AppCompatActivity implements ShoppingCartAdapt
         });
     }
 
+    //generic method that creates a toast message.
     private void toastMessage(String msg) {
         Toast.makeText(ShoppingCart.this, msg, Toast.LENGTH_SHORT).show();
     }

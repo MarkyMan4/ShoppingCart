@@ -7,11 +7,10 @@
     tools:context=".HistoryActivity"
     tools:layout_editor_absoluteY="25dp">
 
-    <!--TODO: Back Button and search-bar?-->
     <Button
         android:id="@+id/shippingAddress"
         android:layout_width="110dp"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
@@ -25,14 +24,26 @@
     <Button
         android:id="@+id/paymentCard"
         android:layout_width="111dp"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
         android:onClick="paymentClick"
         android:text="@string/payment_card"
-        app:layout_constraintBottom_toTopOf="@+id/orderHistory"
         app:layout_constraintStart_toEndOf="@+id/shippingAddress"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/billingAddress"
+        android:layout_width="96dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:onClick="billingClick"
+        android:text="@string/billing_address"
+        app:layout_constraintBottom_toTopOf="@+id/orderHistory"
+        app:layout_constraintStart_toEndOf="@+id/paymentCard"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="1.0" />
 
@@ -46,38 +57,40 @@
         android:layout_marginRight="8dp"
         android:text="@string/order_history"
         android:textSize="30sp"
-        app:layout_constraintBottom_toTopOf="@+id/order_items"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/paymentCard" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/order_items"
-        android:layout_width="344dp"
-        android:layout_height="520dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/backToBrowse"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/orderHistory" />
 
     <Button
-        android:id="@+id/billingAddress"
-        android:layout_width="96dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:onClick="billingClick"
-        android:text="Billing Address"
-        app:layout_constraintBottom_toTopOf="@+id/orderHistory"
+        android:id="@+id/backToBrowse"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginStart="136dp"
+        android:layout_marginLeft="136dp"
+        android:layout_marginEnd="136dp"
+        android:layout_marginRight="136dp"
+        android:layout_marginBottom="8dp"
+        android:onClick="backClicked"
+        android:text="@string/back"
+        android:textAllCaps="false"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.272"
-        app:layout_constraintStart_toEndOf="@+id/paymentCard"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintStart_toStartOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

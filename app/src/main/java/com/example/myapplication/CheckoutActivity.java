@@ -29,6 +29,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+//activity for checkout page.
 public class CheckoutActivity extends AppCompatActivity {
 
     private FirebaseDatabase fDatabase;
@@ -107,6 +108,7 @@ public class CheckoutActivity extends AppCompatActivity {
             }
         };
 
+        //event listener for data change in the database. Updates displayed information.
         dbRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -128,6 +130,7 @@ public class CheckoutActivity extends AppCompatActivity {
             }
         });
 
+        //sets click listener for billing button. Lunches billing popup.
         billingBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -135,6 +138,7 @@ public class CheckoutActivity extends AppCompatActivity {
             }
         });
 
+        //sets click listener for shipping button. Lunches shipping popup.
         shippingBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -142,6 +146,7 @@ public class CheckoutActivity extends AppCompatActivity {
             }
         });
 
+        //sets click listener for payment button. Lunches payment popup.
         paymentBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -149,6 +154,8 @@ public class CheckoutActivity extends AppCompatActivity {
             }
         });
 
+        ///sets click listener for place order button. If the proper information has been added it,
+        //submits the order.
         placeOrder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -190,6 +197,7 @@ public class CheckoutActivity extends AppCompatActivity {
             }
         });
 
+        //sets click listener for back button. Takes user back to browse activity.
         backToBrowse.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -198,6 +206,7 @@ public class CheckoutActivity extends AppCompatActivity {
             }
         });
 
+        //sets click listener for history button. Takes user to there profile page.
         historyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -207,6 +216,7 @@ public class CheckoutActivity extends AppCompatActivity {
         });
     }
 
+    //method that updates the price information being displayed.
     private void updateLabels(double subtotal, double tax, double shipping, double total) {
         DecimalFormat df = new DecimalFormat("0.00");
         subtotalText.setText("$" + df.format(subtotal));
@@ -215,6 +225,7 @@ public class CheckoutActivity extends AppCompatActivity {
         totalText.setText("$" + df.format(total));
     }
 
+    //method that creates the billing popup.
     private void createBillingPopup() {
         dialogBuilder = new AlertDialog.Builder(this);
         View view = getLayoutInflater().inflate(R.layout.popup_shipping_info, null);
@@ -259,6 +270,7 @@ public class CheckoutActivity extends AppCompatActivity {
         });
     }
 
+    //method that creates the shipping popup.
     private void createShippingPopup() {
         dialogBuilder = new AlertDialog.Builder(this);
         View view = getLayoutInflater().inflate(R.layout.popup_shipping_info, null);
@@ -305,6 +317,7 @@ public class CheckoutActivity extends AppCompatActivity {
         });
     }
 
+    //method that creates the payment popup.
     private void createPaymentPopup() {
         dialogBuilder = new AlertDialog.Builder(this);
         View view = getLayoutInflater().inflate(R.layout.popup_payment_info, null);
@@ -352,6 +365,8 @@ public class CheckoutActivity extends AppCompatActivity {
         });
     }
 
+    //method that gets saved information for the signed in users billing address, shipping address,
+    // and credit card.
     private void getSavedInfo() {
         if(snapshot.hasChild("userInfo")) {
             DataSnapshot data = snapshot.child("userInfo");
@@ -380,6 +395,7 @@ public class CheckoutActivity extends AppCompatActivity {
         }
     }
 
+    //method that returns the sales tax rate for the state passed in.
     private double getSalesTax(String state) {
         double tax = 0.0;
         switch (state) {
@@ -437,6 +453,7 @@ public class CheckoutActivity extends AppCompatActivity {
         return tax / 100.0;
     }
 
+    //generic method to make a toast message.
     private void toastMessage(String msg) {
         Toast.makeText(CheckoutActivity.this, msg, Toast.LENGTH_SHORT).show();
     }
@@ -445,5 +462,11 @@ public class CheckoutActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         auth.addAuthStateListener(authListener);
+    }
+
+    //method that takes the user back to the shopping cart activity without placing their order.
+    public void backClicked(View view) {
+        Intent intent = new Intent(CheckoutActivity.this, ShoppingCart.class);
+        startActivity(intent);
     }
 }

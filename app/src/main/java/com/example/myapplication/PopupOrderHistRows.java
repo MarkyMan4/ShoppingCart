@@ -34,8 +34,7 @@ public class PopupOrderHistRows extends RecyclerView.Adapter<PopupOrderHistRows.
     public void onBindViewHolder(PopupOrderHistRows.ViewHolder holder, int position) {
         String iName = itemList.get(position).getName();
         String iDescription = itemList.get(position).getDescription();
-        //TODO: should price be unit price or total based on qty?
-        String iPrice = itemList.get(position).getPrice() + "";
+        String iPrice = (itemList.get(position).getPrice() * itemList.get(position).getQuantity()) + "";
         String iQty = itemList.get(position).getQuantity() + "";
         DecimalFormat df = new DecimalFormat("0.00");
         holder.iNameTextView.setText(iName);

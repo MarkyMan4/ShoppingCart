@@ -34,4 +34,6 @@
     <string name="order_history">Order History</string>
     <string name="shipping_address">Shipping Address</string>
     <string name="payment_card">Payment Card</string>
+    <string name="back">Back</string>
+    <string name="billing_address">Billing Address</string>
 </resources>
