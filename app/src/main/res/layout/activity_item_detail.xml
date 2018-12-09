@@ -24,7 +24,7 @@
     <ImageView
         android:id="@+id/prodImg"
         android:layout_width="match_parent"
-        android:layout_height="104dp"
+        android:layout_height="194dp"
         app:srcCompat="@android:drawable/btn_star_big_on" />
 
     <LinearLayout

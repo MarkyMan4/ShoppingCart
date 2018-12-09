@@ -1,5 +1,6 @@
 package com.example.myapplication;
 
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -18,7 +19,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 public class HistoryActivity extends AppCompatActivity implements OrderHistRows.ItemClickListener, PopupOrderHistRows.ItemClickListener {
@@ -106,7 +106,7 @@ public class HistoryActivity extends AppCompatActivity implements OrderHistRows.
 
     private void createPopup(ArrayList<HistoryItem> histItems) {
         dialogBuilder = new AlertDialog.Builder(this);
-        View view = getLayoutInflater().inflate(R.layout.popup_order_history, null);
+        View view = getLayoutInflater().inflate(R.layout.activity_order_history_item, null);
 
         dialogBuilder.setView(view);
         dialog = dialogBuilder.create();
@@ -130,11 +130,16 @@ public class HistoryActivity extends AppCompatActivity implements OrderHistRows.
 
     @Override
     public void onItemClick(View view, int position) {
-        createPopup(orders.get(position).getHistItems());
+//        createPopup();
+        Intent intent = new Intent(HistoryActivity.this, OrderHistoryItemActivity.class);
+        startActivity(intent);
     }
 
-    @Override
-    public void onPointerCaptureChanged(boolean hasCapture) {
+    public void shippingClick(View view) {
+        //TODO: code to launch edit shipping address popup
+    }
 
+    public void paymentClick(View view) {
+        //TODO: code to launch edit payment card popup
     }
 }
