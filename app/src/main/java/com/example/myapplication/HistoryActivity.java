@@ -132,6 +132,7 @@ public class HistoryActivity extends AppCompatActivity implements OrderHistRows.
     public void onItemClick(View view, int position) {
 //        createPopup();
         Intent intent = new Intent(HistoryActivity.this, OrderHistoryItemActivity.class);
+        intent.putExtra("id", orders.get(position).getOrderId());
         startActivity(intent);
     }
 

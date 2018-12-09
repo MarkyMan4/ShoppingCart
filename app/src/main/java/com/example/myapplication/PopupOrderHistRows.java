@@ -41,7 +41,7 @@ public class PopupOrderHistRows extends RecyclerView.Adapter<PopupOrderHistRows.
         holder.iNameTextView.setText(iName);
         holder.iDescriptionTextView.setText(iDescription);
         holder.iPriceTextView.setText("$" + df.format(Double.parseDouble(iPrice)));
-        holder.iQuantityTextView.setText(iQty);
+        holder.iQuantityTextView.setText("Quantity Purchased: " + iQty);
     }
 
     // total number of rows

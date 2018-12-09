@@ -1,6 +1,7 @@
 package com.example.myapplication;
 
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -23,13 +24,15 @@ import java.util.ArrayList;
 //TODO: Get this activity working.
 public class OrderHistoryItemActivity  extends AppCompatActivity implements PopupOrderHistRows.ItemClickListener{
 
-    private PopupOrderHistRows orderAdapter;
+    private PopupOrderHistRows itemHistAdapter;
     private FirebaseDatabase fDatabase;
     private DatabaseReference dbRef;
     private FirebaseAuth auth;
     private FirebaseAuth.AuthStateListener authListener;
     private AlertDialog.Builder dialogBuilder;
     private AlertDialog dialog;
+    private ArrayList<HistoryItem> histItems;
+    private String orderId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +42,8 @@ public class OrderHistoryItemActivity  extends AppCompatActivity implements Popu
         auth = FirebaseAuth.getInstance();
         fDatabase = FirebaseDatabase.getInstance();
         dbRef = fDatabase.getReference();
+        histItems = new ArrayList<>();
+        orderId = getIntent().getStringExtra("id");
 
         authListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -57,8 +62,8 @@ public class OrderHistoryItemActivity  extends AppCompatActivity implements Popu
         dbRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                getHistory(dataSnapshot.child("purchaseHistory").child(auth.getCurrentUser().getUid()));
-//                doRecyclerView();
+                getHistItems(dataSnapshot.child("purchaseHistory").child(auth.getCurrentUser().getUid()).child(orderId));
+                doRecyclerView();
             }
 
             @Override
@@ -68,14 +73,25 @@ public class OrderHistoryItemActivity  extends AppCompatActivity implements Popu
         });
     }
 
+    private void getHistItems(DataSnapshot dataSnapshot) {
+        for(DataSnapshot ds : dataSnapshot.getChildren()) {
+            if(!ds.getKey().equals("date")) {
+                String description = ds.child("description").getValue().toString();
+                String name = ds.child("name").getValue().toString();
+                double price = Double.parseDouble(ds.child("price").getValue().toString());
+                int quantity = Integer.parseInt(ds.child("quantity").getValue().toString());
+                histItems.add(new HistoryItem(description, name, price, quantity));
+            }
+        }
+    }
+
     private void doRecyclerView() {
-        //code to create and populate recycler view goes here...
-        RecyclerView recyclerView = findViewById(R.id.order_items);
+        RecyclerView recyclerView = findViewById(R.id.hist_item_recycler);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
-//        orderAdapter = new OrderHistRows(this, orders);
-//        orderAdapter.setClickListener(this);
-//        recyclerView.setAdapter(orderAdapter);
+        itemHistAdapter = new PopupOrderHistRows(this, histItems);
+        itemHistAdapter.setClickListener(this);
+        recyclerView.setAdapter(itemHistAdapter);
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(), layoutManager.getOrientation());
         recyclerView.addItemDecoration(dividerItemDecoration);
     }
