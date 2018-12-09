@@ -7,11 +7,13 @@ public class Order {
 
     private String orderId;
     private String date;
+    private String total;
     private ArrayList<HistoryItem> histItems;
 
-    public Order(String orderId, String date, ArrayList<HistoryItem> histItems) {
+    public Order(String orderId, String date, String total, ArrayList<HistoryItem> histItems) {
         this.orderId = orderId;
         this.date = date;
+        this.total = total;
         this.histItems = histItems;
     }
 
@@ -37,5 +39,13 @@ public class Order {
 
     public void setHistItems(ArrayList<HistoryItem> histItems) {
         this.histItems = histItems;
+    }
+
+    public String getTotal() {
+        return total;
+    }
+
+    public void setTotal(String total) {
+        this.total = total;
     }
 }

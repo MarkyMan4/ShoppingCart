@@ -179,13 +179,39 @@ public class ShoppingCart extends AppCompatActivity implements ShoppingCartAdapt
         checkOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(ShoppingCart.this, CheckoutActivity.class);
-                //TODO: make sure cart is not empty when user tries to checkout
-                //pass cart total to checkout activity
-                intent.putExtra("total", subTotal);
-                startActivity(intent);
+                if(!isCartEmpty()) {
+                    Intent intent = new Intent(ShoppingCart.this, CheckoutActivity.class);
+                    //pass cart total to checkout activity
+                    intent.putExtra("total", subTotal);
+                    startActivity(intent);
+                }
+                else {
+                    toastMessage("Cannot proceed with an empty cart");
+                }
             }
         });
+    }
+
+    /*
+     * check if a user's shopping cart is empty so they cannot procede to checkout with an empty cart
+     */
+    private boolean isCartEmpty() {
+        if(isGuest) {
+            if(guestCart.isEmpty()) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+        else {
+            if(items.isEmpty()) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
     }
 
     private ArrayList<String> getItemIds() {

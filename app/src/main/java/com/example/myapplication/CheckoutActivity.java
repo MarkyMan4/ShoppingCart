@@ -178,6 +178,7 @@ public class CheckoutActivity extends AppCompatActivity {
                         for(HistoryItem hi : historyItems) {
                             dbRef.child("purchaseHistory").child(auth.getCurrentUser().getUid()).child(orderId).child(hi.getItemId()).setValue(hi);
                         }
+                        dbRef.child("purchaseHistory").child(auth.getCurrentUser().getUid()).child(orderId).child("total").setValue(Double.parseDouble(totalText.getText().toString().substring(1)));
                         dbRef.child("shoppingCarts").child(auth.getCurrentUser().getUid()).removeValue();
                     }
                     firstScreen.setVisibility(View.INVISIBLE);

@@ -23,6 +23,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 public class HistoryActivity extends AppCompatActivity implements OrderHistRows.ItemClickListener, PopupOrderHistRows.ItemClickListener {
@@ -86,9 +87,11 @@ public class HistoryActivity extends AppCompatActivity implements OrderHistRows.
         for(DataSnapshot ds : dataSnapshot.getChildren()) {
             String orderId = ds.getKey();
             String date = ds.child("date").getValue().toString();
+            DecimalFormat df = new DecimalFormat("0.00");
+            String total = df.format(Double.parseDouble(ds.child("total").getValue().toString()));
             ArrayList<HistoryItem> historyItems = new ArrayList<>();
             for(DataSnapshot d : ds.getChildren()) {
-                if(!d.getKey().equals("date")) {
+                if(!d.getKey().equals("date") && !d.getKey().equals("total")) {
                     String id = d.getKey();
                     String description = d.child("description").getValue().toString();
                     String name = d.child("name").getValue().toString();
@@ -99,7 +102,7 @@ public class HistoryActivity extends AppCompatActivity implements OrderHistRows.
                     historyItems.add(historyItem);
                 }
             }
-            orders.add(new Order(orderId, date, historyItems));
+            orders.add(new Order(orderId, date, total, historyItems));
         }
     }
 

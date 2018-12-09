@@ -33,8 +33,10 @@ public class OrderHistRows extends RecyclerView.Adapter<OrderHistRows.ViewHolder
     public void onBindViewHolder(ViewHolder holder, int position) {
         String orderId = OrderList.get(position).getOrderId();
         String orderDate = OrderList.get(position).getDate().toString();
+        String total = OrderList.get(position).getTotal();
         holder.orderIdField.setText(orderId);
         holder.orderDateField.setText(orderDate);
+        holder.orderTotal.setText("Order Total: $" + total);
     }
 
     // total number of rows
@@ -46,12 +48,13 @@ public class OrderHistRows extends RecyclerView.Adapter<OrderHistRows.ViewHolder
 
     // stores and recycles views as they are scrolled off screen
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        TextView orderIdField, orderDateField;
+        TextView orderIdField, orderDateField, orderTotal;
 
         ViewHolder(View itemView) {
             super(itemView);
             orderIdField = itemView.findViewById(R.id.orderIDField);
             orderDateField = itemView.findViewById(R.id.orderDateField);
+            orderTotal = itemView.findViewById(R.id.orderTotalField);
             itemView.setOnClickListener(this);
         }
 

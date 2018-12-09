@@ -21,7 +21,6 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
-//TODO: Get this activity working.
 public class OrderHistoryItemActivity  extends AppCompatActivity implements PopupOrderHistRows.ItemClickListener{
 
     private PopupOrderHistRows itemHistAdapter;
@@ -75,7 +74,7 @@ public class OrderHistoryItemActivity  extends AppCompatActivity implements Popu
 
     private void getHistItems(DataSnapshot dataSnapshot) {
         for(DataSnapshot ds : dataSnapshot.getChildren()) {
-            if(!ds.getKey().equals("date")) {
+            if(!ds.getKey().equals("date") && !ds.getKey().equals("total")) {
                 String description = ds.child("description").getValue().toString();
                 String name = ds.child("name").getValue().toString();
                 double price = Double.parseDouble(ds.child("price").getValue().toString());
