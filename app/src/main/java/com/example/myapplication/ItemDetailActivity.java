@@ -74,9 +74,10 @@ public class ItemDetailActivity extends AppCompatActivity {
                 data = dataSnapshot;
                 item = getItemData(ID);
                 title.setText(item.getName());
-                /*String mDrawableName = "myappicon";
-                int resID = getResources().getIdentifier(mDrawableName , "drawable", getPackageName());
-                productImage.setImageResource(R.drawable.coffemaker);*/
+                String itemPicName = item.getName().replaceAll("\\s", "");
+                itemPicName = itemPicName.toLowerCase();
+                int resID = getResources().getIdentifier(itemPicName, "drawable", getPackageName());
+                productImage.setImageResource(resID);
                 DecimalFormat df = new DecimalFormat("0.00");
                 priceLabel.setText("Price: $" + df.format(Double.parseDouble(item.getPrice())));
                 description.setText(item.getDescription());
