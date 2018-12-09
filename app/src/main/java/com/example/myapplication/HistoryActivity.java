@@ -21,9 +21,10 @@ import com.google.firebase.database.ValueEventListener;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
-public class HistoryActivity extends AppCompatActivity implements OrderHistRows.ItemClickListener{
+public class HistoryActivity extends AppCompatActivity implements OrderHistRows.ItemClickListener, PopupOrderHistRows.ItemClickListener {
 
     private OrderHistRows orderAdapter;
+    private PopupOrderHistRows histPopupAdapter;
     private FirebaseDatabase fDatabase;
     private DatabaseReference dbRef;
     private FirebaseAuth auth;
@@ -103,13 +104,22 @@ public class HistoryActivity extends AppCompatActivity implements OrderHistRows.
         recyclerView.addItemDecoration(dividerItemDecoration);
     }
 
-    private void createPopup() {
+    private void createPopup(ArrayList<HistoryItem> histItems) {
         dialogBuilder = new AlertDialog.Builder(this);
         View view = getLayoutInflater().inflate(R.layout.popup_order_history, null);
 
         dialogBuilder.setView(view);
         dialog = dialogBuilder.create();
         dialog.show();
+
+        RecyclerView recyclerView = view.findViewById(R.id.hist_item_recycler);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(layoutManager);
+        histPopupAdapter = new PopupOrderHistRows(this, histItems);
+        //histPopupAdapter.setClickListener(this); 
+        recyclerView.setAdapter(histPopupAdapter);
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(), layoutManager.getOrientation());
+        recyclerView.addItemDecoration(dividerItemDecoration);
     }
 
     @Override
@@ -120,6 +130,11 @@ public class HistoryActivity extends AppCompatActivity implements OrderHistRows.
 
     @Override
     public void onItemClick(View view, int position) {
-        createPopup();
+        createPopup(orders.get(position).getHistItems());
+    }
+
+    @Override
+    public void onPointerCaptureChanged(boolean hasCapture) {
+
     }
 }
