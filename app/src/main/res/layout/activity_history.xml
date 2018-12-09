@@ -10,7 +10,7 @@
     <!--TODO: Back Button and search-bar?-->
     <Button
         android:id="@+id/shippingAddress"
-        android:layout_width="wrap_content"
+        android:layout_width="110dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
@@ -24,10 +24,10 @@
 
     <Button
         android:id="@+id/paymentCard"
-        android:layout_width="0dp"
+        android:layout_width="111dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="36dp"
-        android:layout_marginLeft="36dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
         android:onClick="paymentClick"
         android:text="@string/payment_card"
@@ -39,7 +39,7 @@
     <TextView
         android:id="@+id/orderHistory"
         android:layout_width="344dp"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginEnd="8dp"
@@ -61,5 +61,23 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/orderHistory" />
+
+    <Button
+        android:id="@+id/billingAddress"
+        android:layout_width="96dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:onClick="billingClick"
+        android:text="Billing Address"
+        app:layout_constraintBottom_toTopOf="@+id/orderHistory"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.272"
+        app:layout_constraintStart_toEndOf="@+id/paymentCard"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0" />
 
 </android.support.constraint.ConstraintLayout>

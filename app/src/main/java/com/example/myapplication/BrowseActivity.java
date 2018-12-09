@@ -26,7 +26,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-
+//Activity for browsing items in the store.
 public class BrowseActivity extends AppCompatActivity implements MyRecyclerViewAdapter.ItemClickListener {
     MyRecyclerViewAdapter rvAdapter;
     private FirebaseDatabase fDatabase;
@@ -68,6 +68,7 @@ public class BrowseActivity extends AppCompatActivity implements MyRecyclerViewA
 
         setSignOutButton();
 
+        //sets click listener for sign out button.
         signOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -80,6 +81,8 @@ public class BrowseActivity extends AppCompatActivity implements MyRecyclerViewA
             }
         });
 
+        //event listener for data changes in the database. Runs if data changes updating what is
+        //displayed in the app.
         dbRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -114,6 +117,8 @@ public class BrowseActivity extends AppCompatActivity implements MyRecyclerViewA
             }
         };
 
+        //sets click listener for go button. This button searches for items that contain the string
+        //in the search bar.
         go.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -128,6 +133,8 @@ public class BrowseActivity extends AppCompatActivity implements MyRecyclerViewA
             }
         });
 
+        //sets click listener for cart icon. When pressed it takes you to a screen displaying your
+        //shopping cart.
         cartIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -139,6 +146,8 @@ public class BrowseActivity extends AppCompatActivity implements MyRecyclerViewA
         });
     }
 
+    //Method that changes the display based is the user is a guest. Changes sign out button to say
+    //exit and removes the profile button since guests don't have a profile.
     private void setSignOutButton() {
         FirebaseUser user = auth.getCurrentUser();
         //if no user is signed in, the sign out button is appropriately renamed 'Exit'
@@ -149,6 +158,7 @@ public class BrowseActivity extends AppCompatActivity implements MyRecyclerViewA
         }
     }
 
+    //updates what is displayed in the recycler view.
     private void updateRecyclerView(ArrayList<Item> newItems) {
         RecyclerView recyclerView = findViewById(R.id.rvItems);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
@@ -158,6 +168,7 @@ public class BrowseActivity extends AppCompatActivity implements MyRecyclerViewA
         recyclerView.setAdapter(rvAdapter);
     }
 
+    //initially fills the recycler view for when the activity is first displayed.
     private void doRecyclerView(DataSnapshot dataSnapshot){
         RecyclerView recyclerView = findViewById(R.id.rvItems);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
@@ -169,6 +180,7 @@ public class BrowseActivity extends AppCompatActivity implements MyRecyclerViewA
         recyclerView.addItemDecoration(dividerItemDecoration);
     }
 
+    //method that fills the items array with item instances with data in the database.
     private ArrayList<Item> getData(DataSnapshot dataSnapshot) {
         items = new ArrayList<>();
         for(DataSnapshot ds : dataSnapshot.getChildren()) {
@@ -188,6 +200,8 @@ public class BrowseActivity extends AppCompatActivity implements MyRecyclerViewA
         auth.addAuthStateListener(authListener);
     }
 
+    //method that is called when an item in the recycler view is clicked. Starts an activity to
+    //display the details of the clicked item.
     @Override
     public void onItemClick(View view, int position) {
         Item item = searchItems.get(position);
@@ -198,11 +212,13 @@ public class BrowseActivity extends AppCompatActivity implements MyRecyclerViewA
         startActivity(intent);
     }
 
+    //generic method to make a toast message.
     private void toastMessage(String msg) {
         Toast.makeText(BrowseActivity.this, msg, Toast.LENGTH_SHORT).show();
     }
 
-    //TODO: Should not display button if guest
+    //Method that is called when the profile button is clicked. Starts an activity that displays the
+    //profile of the currently signed in user.
     public void viewProfile(View view) {
         Intent intent = new Intent(BrowseActivity.this, HistoryActivity.class);
         startActivity(intent);

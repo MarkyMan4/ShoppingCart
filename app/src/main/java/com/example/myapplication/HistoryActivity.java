@@ -104,24 +104,6 @@ public class HistoryActivity extends AppCompatActivity implements OrderHistRows.
         recyclerView.addItemDecoration(dividerItemDecoration);
     }
 
-    private void createPopup(ArrayList<HistoryItem> histItems) {
-        dialogBuilder = new AlertDialog.Builder(this);
-        View view = getLayoutInflater().inflate(R.layout.activity_order_history_item, null);
-
-        dialogBuilder.setView(view);
-        dialog = dialogBuilder.create();
-        dialog.show();
-
-        RecyclerView recyclerView = view.findViewById(R.id.hist_item_recycler);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(layoutManager);
-        histPopupAdapter = new PopupOrderHistRows(this, histItems);
-        //histPopupAdapter.setClickListener(this); 
-        recyclerView.setAdapter(histPopupAdapter);
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(), layoutManager.getOrientation());
-        recyclerView.addItemDecoration(dividerItemDecoration);
-    }
-
     @Override
     protected void onStart() {
         super.onStart();
@@ -130,7 +112,6 @@ public class HistoryActivity extends AppCompatActivity implements OrderHistRows.
 
     @Override
     public void onItemClick(View view, int position) {
-//        createPopup();
         Intent intent = new Intent(HistoryActivity.this, OrderHistoryItemActivity.class);
         intent.putExtra("id", orders.get(position).getOrderId());
         startActivity(intent);
@@ -142,5 +123,8 @@ public class HistoryActivity extends AppCompatActivity implements OrderHistRows.
 
     public void paymentClick(View view) {
         //TODO: code to launch edit payment card popup
+    }
+
+    public void billingClick(View view) {
     }
 }
