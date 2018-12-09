@@ -136,6 +136,10 @@ public class HistoryActivity extends AppCompatActivity implements OrderHistRows.
         createPaymentPopup();
     }
 
+    public void billingClick(View view) {
+        createBillingPopup();
+    }
+
     private void createShippingPopup() {
         dialogBuilder = new AlertDialog.Builder(this);
         View view = getLayoutInflater().inflate(R.layout.popup_shipping_info, null);
@@ -218,6 +222,46 @@ public class HistoryActivity extends AppCompatActivity implements OrderHistRows.
         });
     }
 
+    private void createBillingPopup() {
+        dialogBuilder = new AlertDialog.Builder(this);
+        View view = getLayoutInflater().inflate(R.layout.popup_shipping_info, null);
+        final EditText addrInput = view.findViewById(R.id.addr_input);
+        final EditText cityInput = view.findViewById(R.id.city_input);
+        final EditText stateInput = view.findViewById(R.id.state_input);
+        final EditText zipInput = view.findViewById(R.id.zip_input);
+        Button done = view.findViewById(R.id.shipping_done_btn);
+
+        addrInput.setText(billingAddr);
+        cityInput.setText(billingCity);
+        stateInput.setText(billingState);
+        zipInput.setText(billingZip);
+
+        dialogBuilder.setView(view);
+        dialog = dialogBuilder.create();
+        dialog.show();
+
+        done.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                billingAddr = addrInput.getText().toString();
+                billingCity = cityInput.getText().toString();
+                billingState = stateInput.getText().toString();
+                billingZip = zipInput.getText().toString();
+                if(billingAddr.matches("") || billingCity.matches("") || billingState.matches("") || billingZip.matches("")) {
+                    toastMessage("Please fill in all the required fields");
+                }
+                else {
+                    DatabaseReference billingInfo = dbRef.child("userInfo").child(auth.getCurrentUser().getUid()).child("billingAddress");
+                    billingInfo.child("Street").setValue(billingAddr);
+                    billingInfo.child("City").setValue(billingCity);
+                    billingInfo.child("State").setValue(billingState);
+                    billingInfo.child("Zip").setValue(Integer.parseInt(billingZip));
+                    dialog.hide();
+                }
+            }
+        });
+    }
+
     private void getSavedInfo(DataSnapshot snapshot) {
         if(snapshot.hasChild("userInfo")) {
             DataSnapshot data = snapshot.child("userInfo");
@@ -248,8 +292,5 @@ public class HistoryActivity extends AppCompatActivity implements OrderHistRows.
 
     private void toastMessage(String msg) {
         Toast.makeText(HistoryActivity.this, msg, Toast.LENGTH_SHORT).show();
-    }
-
-    public void billingClick(View view) {
     }
 }

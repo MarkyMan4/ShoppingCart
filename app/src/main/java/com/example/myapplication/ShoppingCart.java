@@ -196,15 +196,6 @@ public class ShoppingCart extends AppCompatActivity implements ShoppingCartAdapt
         return itemIds;
     }
 
-    private void updateRecyclerView(ArrayList<ShoppingCartItem> newItems) {
-        RecyclerView recyclerView = findViewById(R.id.rvItems);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(layoutManager);
-        scAdapter = new ShoppingCartAdapter(this, newItems);
-        scAdapter.setClickListener(this);
-        recyclerView.setAdapter(scAdapter);
-    }
-
     private void doRecyclerView(){
         RecyclerView recyclerView = findViewById(R.id.rvItems);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
