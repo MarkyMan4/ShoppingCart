@@ -10,6 +10,10 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -32,6 +36,9 @@ public class HistoryActivity extends AppCompatActivity implements OrderHistRows.
     private ArrayList<Order> orders;
     private AlertDialog.Builder dialogBuilder;
     private AlertDialog dialog;
+    private String billingAddr, billingCity, billingState, billingZip, shippingAddr, shippingCity, shippingState, shippingZip;
+    private String expiration, nameOnCard, cardNumber;
+    private boolean histLoaded = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,8 +67,12 @@ public class HistoryActivity extends AppCompatActivity implements OrderHistRows.
         dbRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                getHistory(dataSnapshot.child("purchaseHistory").child(auth.getCurrentUser().getUid()));
-                doRecyclerView();
+                getSavedInfo(dataSnapshot);
+                if(!histLoaded) {
+                    getHistory(dataSnapshot.child("purchaseHistory").child(auth.getCurrentUser().getUid()));
+                    doRecyclerView();
+                    histLoaded = true;
+                }
             }
 
             @Override
@@ -104,24 +115,6 @@ public class HistoryActivity extends AppCompatActivity implements OrderHistRows.
         recyclerView.addItemDecoration(dividerItemDecoration);
     }
 
-    private void createPopup(ArrayList<HistoryItem> histItems) {
-        dialogBuilder = new AlertDialog.Builder(this);
-        View view = getLayoutInflater().inflate(R.layout.activity_order_history_item, null);
-
-        dialogBuilder.setView(view);
-        dialog = dialogBuilder.create();
-        dialog.show();
-
-        RecyclerView recyclerView = view.findViewById(R.id.hist_item_recycler);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(layoutManager);
-        histPopupAdapter = new PopupOrderHistRows(this, histItems);
-        //histPopupAdapter.setClickListener(this); 
-        recyclerView.setAdapter(histPopupAdapter);
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(), layoutManager.getOrientation());
-        recyclerView.addItemDecoration(dividerItemDecoration);
-    }
-
     @Override
     protected void onStart() {
         super.onStart();
@@ -137,10 +130,124 @@ public class HistoryActivity extends AppCompatActivity implements OrderHistRows.
     }
 
     public void shippingClick(View view) {
-        //TODO: code to launch edit shipping address popup
+        createShippingPopup();
     }
 
     public void paymentClick(View view) {
-        //TODO: code to launch edit payment card popup
+        createPaymentPopup();
+    }
+
+    private void createShippingPopup() {
+        dialogBuilder = new AlertDialog.Builder(this);
+        View view = getLayoutInflater().inflate(R.layout.popup_shipping_info, null);
+        final EditText addrInput = view.findViewById(R.id.addr_input);
+        final EditText cityInput = view.findViewById(R.id.city_input);
+        final EditText stateInput = view.findViewById(R.id.state_input);
+        final EditText zipInput = view.findViewById(R.id.zip_input);
+        Button done = view.findViewById(R.id.shipping_done_btn);
+
+        addrInput.setText(shippingAddr);
+        cityInput.setText(shippingCity);
+        stateInput.setText(shippingState);
+        zipInput.setText(shippingZip);
+
+        dialogBuilder.setView(view);
+        dialog = dialogBuilder.create();
+        dialog.show();
+
+        done.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                shippingAddr = addrInput.getText().toString();
+                shippingCity = cityInput.getText().toString();
+                shippingState = stateInput.getText().toString();
+                shippingZip = zipInput.getText().toString();
+                if(shippingAddr.matches("") || shippingCity.matches("") || shippingState.matches("") || shippingZip.matches("")) {
+                    toastMessage("Please fill in all the required fields");
+                }
+                else {
+                    DatabaseReference billingInfo = dbRef.child("userInfo").child(auth.getCurrentUser().getUid()).child("shippingAddress");
+                    billingInfo.child("Street").setValue(shippingAddr);
+                    billingInfo.child("City").setValue(shippingCity);
+                    billingInfo.child("State").setValue(shippingState);
+                    billingInfo.child("Zip").setValue(Integer.parseInt(shippingZip));
+                    dialog.hide();
+                }
+            }
+        });
+    }
+
+    private void createPaymentPopup() {
+        dialogBuilder = new AlertDialog.Builder(this);
+        View view = getLayoutInflater().inflate(R.layout.popup_payment_info, null);
+
+        final EditText numberInput = view.findViewById(R.id.number_input);
+        final EditText nameInput = view.findViewById(R.id.name_input);
+        final EditText expirationInput = view.findViewById(R.id.date_input);
+        Button done = view.findViewById(R.id.payment_done_btn);
+        final CheckBox saveBox = view.findViewById(R.id.save_box);
+
+        numberInput.setText(cardNumber);
+        nameInput.setText(nameOnCard);
+        expirationInput.setText(expiration);
+
+        saveBox.setVisibility(View.INVISIBLE);
+
+        dialogBuilder.setView(view);
+        dialog = dialogBuilder.create();
+        dialog.show();
+
+        done.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                cardNumber = numberInput.getText().toString();
+                nameOnCard = nameInput.getText().toString();
+                expiration = expirationInput.getText().toString();
+
+                if(cardNumber.matches("") || nameOnCard.matches("") || expiration.matches("")) {
+                    toastMessage("Please fill in all the required fields");
+                }
+                else {
+                    DatabaseReference paymentInfo = dbRef.child("userInfo").child(auth.getCurrentUser().getUid()).child("creditCard");
+                    paymentInfo.child("Expiration").setValue(expiration);
+                    paymentInfo.child("NameOnCard").setValue(nameOnCard);
+                    paymentInfo.child("CardNumber").setValue(cardNumber);
+
+                    dialog.hide();
+                }
+            }
+        });
+    }
+
+    private void getSavedInfo(DataSnapshot snapshot) {
+        if(snapshot.hasChild("userInfo")) {
+            DataSnapshot data = snapshot.child("userInfo");
+            if(data.hasChild(auth.getCurrentUser().getUid())) {
+                DataSnapshot billingData = data.child(auth.getCurrentUser().getUid()).child("billingAddress");
+                DataSnapshot shippingData  = data.child(auth.getCurrentUser().getUid()).child("shippingAddress");
+
+                billingAddr = billingData.child("Street").getValue().toString();
+                billingCity = billingData.child("City").getValue().toString();
+                billingState = billingData.child("State").getValue().toString();
+                billingZip = billingData.child("Zip").getValue().toString();
+
+                shippingAddr = shippingData.child("Street").getValue().toString();
+                shippingCity = shippingData.child("City").getValue().toString();
+                shippingState = shippingData.child("State").getValue().toString();
+                shippingZip = shippingData.child("Zip").getValue().toString();
+
+                if(data.child(auth.getCurrentUser().getUid()).hasChild("creditCard")) {
+                    DataSnapshot paymentData = data.child(auth.getCurrentUser().getUid()).child("creditCard");
+                    cardNumber = paymentData.child("CardNumber").getValue().toString();
+                    expiration = paymentData.child("Expiration").getValue().toString();
+                    nameOnCard = paymentData.child("NameOnCard").getValue().toString();
+
+                }
+            }
+        }
+    }
+
+    private void toastMessage(String msg) {
+        Toast.makeText(HistoryActivity.this, msg, Toast.LENGTH_SHORT).show();
     }
 }
