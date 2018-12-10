@@ -9,10 +9,12 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -23,8 +25,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class AdminDashboard extends AppCompatActivity implements MyRecyclerViewAdapter.ItemClickListener {
 
@@ -39,7 +43,7 @@ public class AdminDashboard extends AppCompatActivity implements MyRecyclerViewA
     private Button finish;
     private Button cancel;
     private Button newItemButton;
-    private Spinner promoSpinner;
+    private Button editButton;
     private Spinner itemSpinner;
     private EditText percentInput;
     private EditText startDate;
@@ -76,7 +80,7 @@ public class AdminDashboard extends AppCompatActivity implements MyRecyclerViewA
         addCode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                selectPromotionDialog();
+                managePromotionsDialog();
             }
         });
 
@@ -136,37 +140,164 @@ public class AdminDashboard extends AppCompatActivity implements MyRecyclerViewA
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(), layoutManager.getOrientation());
         recyclerView.addItemDecoration(dividerItemDecoration);
     }
-
-    private void selectPromotionDialog() {
+    private void managePromotionsDialog() {
         dialogBuilder = new AlertDialog.Builder(this);
         View view = getLayoutInflater().inflate(R.layout.add_code_popup, null);
         dialogBuilder.setView(view);
         dialog = dialogBuilder.create();
         dialog.show();
 
-        promoSpinner = view.findViewById(R.id.selectpromotion);
-        DataSnapshot promotions = data.child("promotion");
-        ArrayList<String> items = new ArrayList<>();
-        for(DataSnapshot ds : promotions.getChildren()) {
-            items.add((String)ds.child("name").getValue());
-        }
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_spinner_item, items);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        promoSpinner.setAdapter(adapter);
+//        DataSnapshot promotions = data.child("promotion");
+//        ArrayList<String> items = new ArrayList<>();
+//        for(DataSnapshot ds : promotions.getChildren()) {
+//            items.add((String)ds.child("name").getValue());
+//        }
+//        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+//                android.R.layout.simple_spinner_item, items);
+//        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//        promoSpinner.setAdapter(adapter);
 
         next = view.findViewById(R.id.nextbtn);
+        editButton = view.findViewById(R.id.edit_btn);
         close = view.findViewById(R.id.closebtn);
 
         next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 dialog.hide();
-                String promotion = promoSpinner.getSelectedItem().toString();
-                if(promotion.equals("Item % Discount"))
-                    createItemPercentPopup();
+                createItemPercentPopup();
             }
         });
+
+        editButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.hide();
+                createEditPromoPopup();
+            }
+        });
+
+        close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.hide();
+            }
+        });
+    }
+
+    private void createEditPromoPopup() {
+        dialogBuilder = new AlertDialog.Builder(this);
+        View view = getLayoutInflater().inflate(R.layout.popup_edit_promotion, null);
+
+        final Spinner promoSpinner = view.findViewById(R.id.promo_spinner);
+        final EditText editPercentInput = view.findViewById(R.id.edit_percent_input);
+        final EditText editStartDateInput = view.findViewById(R.id.edit_start_date);
+        final EditText editEndDateInput = view.findViewById(R.id.edit_end_date);
+        final View div1 = view.findViewById(R.id.divider6);
+        final View div2 = view.findViewById(R.id.divider7);
+        final TextView percentLabel = view.findViewById(R.id.percent_label);
+        final TextView startLabel = view.findViewById(R.id.start_label);
+        final TextView endLabel = view.findViewById(R.id.end_label);
+        final Button editDoneBtn = view.findViewById(R.id.edit_promo_done);
+        final Button editCancelBtn = view.findViewById(R.id.edit_promo_cancel);
+
+        DataSnapshot promotions = data.child("itemDiscount");
+        ArrayList<String> promos = new ArrayList<>();
+        promos.add("-select-");
+        SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy");
+        Date today = new Date();
+        for(DataSnapshot ds : promotions.getChildren()) {
+            try {
+                Date start = df.parse(ds.child("startDate").getValue().toString());
+                Date end = df.parse(ds.child("endDate").getValue().toString());
+                if((start.before(today) || datesEqual(today, start)) && (end.after(today) || datesEqual(today, end))) {
+                    promos.add(ds.getKey());
+                }
+                ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+                        android.R.layout.simple_spinner_item, promos);
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                promoSpinner.setAdapter(adapter);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+
+        promoSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                String text = promoSpinner.getSelectedItem().toString();
+                if(text.equals("-select-")) {
+                    editPercentInput.setVisibility(View.INVISIBLE);
+                    editStartDateInput.setVisibility(View.INVISIBLE);
+                    editEndDateInput.setVisibility(View.INVISIBLE);
+                    div1.setVisibility(View.INVISIBLE);
+                    div2.setVisibility(View.INVISIBLE);
+                    percentLabel.setVisibility(View.INVISIBLE);
+                    startLabel.setVisibility(View.INVISIBLE);
+                    endLabel.setVisibility(View.INVISIBLE);
+                    editDoneBtn.setVisibility(View.INVISIBLE);
+                    editCancelBtn.setVisibility(View.INVISIBLE);
+                }
+                else {
+                    editPercentInput.setVisibility(View.VISIBLE);
+                    editStartDateInput.setVisibility(View.VISIBLE);
+                    editEndDateInput.setVisibility(View.VISIBLE);
+                    div1.setVisibility(View.VISIBLE);
+                    div2.setVisibility(View.VISIBLE);
+                    percentLabel.setVisibility(View.VISIBLE);
+                    startLabel.setVisibility(View.VISIBLE);
+                    endLabel.setVisibility(View.VISIBLE);
+                    editDoneBtn.setVisibility(View.VISIBLE);
+                    editCancelBtn.setVisibility(View.VISIBLE);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+        editDoneBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String promotion = promoSpinner.getSelectedItem().toString();
+                String percent = editPercentInput.getText().toString();
+                String startDate= editStartDateInput.getText().toString();
+                String endDate = editEndDateInput.getText().toString();
+                String regex = "([0-9]{2})/([0-9]{2})/([0-9]{4})";
+                if(percent.matches("") || startDate.matches("") || endDate.matches("")) {
+                    toastMessage("Enter all fields");
+                }
+                else {
+                    if(!startDate.matches(regex) || !endDate.matches(regex)) {
+                        toastMessage("Enter dates in the form mm/dd/yyyy");
+                    }
+                    else {
+                        dbRef.child("itemDiscount").child(promotion).child("percent").setValue(percent);
+                        dbRef.child("itemDiscount").child(promotion).child("startDate").setValue(startDate);
+                        dbRef.child("itemDiscount").child(promotion).child("endDate").setValue(endDate);
+                        toastMessage(promotion + " has been updated");
+                        dialog.hide();
+                    }
+                }
+            }
+        });
+
+        editCancelBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.hide();
+            }
+        });
+
+        dialogBuilder.setView(view);
+        dialog = dialogBuilder.create();
+        dialog.show();
+    }
+
+    private boolean datesEqual(Date d1, Date d2) {
+        return d1.getDate() == d2.getDate() && d1.getMonth() == d2.getMonth() && d1.getYear() == d2.getYear();
     }
 
     private void createItemPercentPopup() {

@@ -34,4 +34,5 @@
     <string name="order_history">Order History</string>
     <string name="shipping_address">Shipping Address</string>
     <string name="payment_card">Payment Card</string>
+    <string name="promo_available">Promo Code Available</string>
 </resources>
