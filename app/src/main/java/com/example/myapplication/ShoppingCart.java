@@ -158,6 +158,7 @@ public class ShoppingCart extends AppCompatActivity implements ShoppingCartAdapt
                     toastMessage("Promo Code Not Valid");
                 }
                 else {
+                    toastMessage("Promo Code Applied");
                     updatePrice();
                 }
             }

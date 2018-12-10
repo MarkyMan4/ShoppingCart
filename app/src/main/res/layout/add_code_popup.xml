@@ -6,10 +6,11 @@
 
     <TextView
         android:id="@+id/typelabel"
-        android:layout_marginTop="15dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Select Type of Promotion"
+        android:layout_marginTop="15dp"
+        android:text="Choose What To Do"
+        android:textAlignment="center"
         android:textSize="18sp"
         android:textStyle="bold" />
 
@@ -21,11 +22,23 @@
         android:background="?android:attr/listDivider"
         android:visibility="visible" />
 
-    <Spinner
-        android:id="@+id/selectpromotion"
-        android:layout_marginTop="15dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+    <Button
+        android:id="@+id/nextbtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="Create New Promotion"
+        android:textAllCaps="false"
+        android:textStyle="bold" />
+
+    <Button
+        android:id="@+id/edit_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="Edit Existing Promotion"
+        android:textAllCaps="false"
+        android:textStyle="bold" />
 
     <View
         android:id="@+id/divider2"
@@ -35,28 +48,12 @@
         android:background="?android:attr/listDivider"
         android:visibility="visible" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <Button
+        android:id="@+id/closebtn"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="15dp"
-        android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/closebtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Close"
-            android:textStyle="bold" />
-
-        <Button
-            android:id="@+id/nextbtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Next"
-            android:textStyle="bold" />
-
-    </LinearLayout>
+        android:layout_gravity="center"
+        android:text="Close"
+        android:textStyle="bold" />
 
 </LinearLayout>

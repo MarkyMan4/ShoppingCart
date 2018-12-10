@@ -7,8 +7,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,6 +23,10 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.text.DecimalFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 
 public class EditItemActivity extends AppCompatActivity {
 
@@ -36,6 +42,7 @@ public class EditItemActivity extends AppCompatActivity {
     private Item item;
     private DataSnapshot data;
     private boolean deleted = false;
+    private Spinner promoSpinner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +59,9 @@ public class EditItemActivity extends AppCompatActivity {
         priceButton = findViewById(R.id.edit_price_btn);
         doneButton = findViewById(R.id.done_btn);
         deleteButton = findViewById(R.id.delete_btn);
+        promoSpinner = findViewById(R.id.available_promo_spinner);
+
+
 
         item = new Item();
         itemId = getIntent().getStringExtra("ID");
@@ -78,6 +88,7 @@ public class EditItemActivity extends AppCompatActivity {
                 if(!deleted) {
                     getItemData(data.child("items").child(itemId));
                     updateLabels();
+                    populateSpinner(dataSnapshot);
                 }
             }
 
@@ -104,6 +115,12 @@ public class EditItemActivity extends AppCompatActivity {
         doneButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(promoSpinner.getSelectedItem().toString().equals("No Promotion") && data.child("items").child(itemId).hasChild("discountCode")) {
+                    dbRef.child("items").child(itemId).child("discountCode").removeValue();
+                }
+                else {
+                    dbRef.child("items").child(itemId).child("discountCode").setValue(promoSpinner.getSelectedItem().toString());
+                }
                 Intent intent = new Intent(EditItemActivity.this, AdminDashboard.class);
                 startActivity(intent);
             }
@@ -115,6 +132,37 @@ public class EditItemActivity extends AppCompatActivity {
                 createConfirmDeletePopup();
             }
         });
+    }
+
+    private void populateSpinner(DataSnapshot dataSnapshot) {
+        DataSnapshot promotions = dataSnapshot.child("itemDiscount");
+        ArrayList<String> promos = new ArrayList<>();
+        promos.add("No Promotion");
+        SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy");
+        Date today = new Date();
+        for(DataSnapshot ds : promotions.getChildren()) {
+            try {
+                Date start = df.parse(ds.child("startDate").getValue().toString());
+                Date end = df.parse(ds.child("endDate").getValue().toString());
+                if((start.before(today) || datesEqual(today, start)) && (end.after(today) || datesEqual(today, end))) {
+                    promos.add(ds.getKey());
+                }
+                ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+                        android.R.layout.simple_spinner_item, promos);
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                promoSpinner.setAdapter(adapter);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+        if(dataSnapshot.child("items").child(itemId).hasChild("discountCode")) {
+            String code = dataSnapshot.child("items").child(itemId).child("discountCode").getValue().toString();
+            promoSpinner.setSelection(promos.indexOf(code));
+        }
+    }
+
+    private boolean datesEqual(Date d1, Date d2) {
+        return d1.getDate() == d2.getDate() && d1.getMonth() == d2.getMonth() && d1.getYear() == d2.getYear();
     }
 
     private void getItemData(DataSnapshot dataSnapshot) {
@@ -194,6 +242,11 @@ public class EditItemActivity extends AppCompatActivity {
             public void onClick(View view) {
                 deleted = true;
                 dbRef.child("items").child(itemId).removeValue();
+                for(DataSnapshot ds : data.child("shoppingCarts").getChildren()) {
+                    if(ds.hasChild(itemId)) {
+                        dbRef.child("shoppingCarts").child(ds.getKey()).child(itemId).removeValue();
+                    }
+                }
                 Intent intent = new Intent(EditItemActivity.this, AdminDashboard.class);
                 startActivity(intent);
             }

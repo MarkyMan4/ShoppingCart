@@ -36,4 +36,5 @@
     <string name="payment_card">Payment Card</string>
     <string name="back">Back</string>
     <string name="billing_address">Billing Address</string>
+    <string name="promo_available">Promo Code Available</string>
 </resources>

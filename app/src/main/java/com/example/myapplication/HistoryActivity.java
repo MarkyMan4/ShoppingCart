@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -39,6 +40,7 @@ public class HistoryActivity extends AppCompatActivity implements OrderHistRows.
     private String billingAddr, billingCity, billingState, billingZip, shippingAddr, shippingCity, shippingState, shippingZip;
     private String expiration, nameOnCard, cardNumber;
     private boolean histLoaded = false;
+    private TextView historyLabel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +51,7 @@ public class HistoryActivity extends AppCompatActivity implements OrderHistRows.
         fDatabase = FirebaseDatabase.getInstance();
         dbRef = fDatabase.getReference();
         orders = new ArrayList<>();
+        historyLabel = findViewById(R.id.orderHistory);
 
         authListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -68,6 +71,7 @@ public class HistoryActivity extends AppCompatActivity implements OrderHistRows.
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 getSavedInfo(dataSnapshot);
+                historyLabel.setText("History For " + dataSnapshot.child("users").child(auth.getCurrentUser().getUid()).child("first").getValue().toString());
                 if(!histLoaded) {
                     getHistory(dataSnapshot.child("purchaseHistory").child(auth.getCurrentUser().getUid()));
                     doRecyclerView();

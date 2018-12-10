@@ -76,15 +76,17 @@ public class ItemDetailActivity extends AppCompatActivity {
                 // whenever data at this location is updated.
                 data = dataSnapshot;
                 item = getItemData(ID);
-                title.setText(item.getName());
-                String itemPicName = item.getName().replaceAll("\\s", "");
-                itemPicName = itemPicName.toLowerCase();
-                int resID = getResources().getIdentifier(itemPicName, "drawable", getPackageName());
-                productImage.setImageResource(resID);
-                DecimalFormat df = new DecimalFormat("0.00");
-                priceLabel.setText("Price: $" + df.format(Double.parseDouble(item.getPrice())));
-                description.setText(item.getDescription());
-                quantity.setText("1");
+                if(item != null) {
+                    title.setText(item.getName());
+                    String itemPicName = item.getName().replaceAll("\\s", "");
+                    itemPicName = itemPicName.toLowerCase();
+                    int resID = getResources().getIdentifier(itemPicName, "drawable", getPackageName());
+                    productImage.setImageResource(resID);
+                    DecimalFormat df = new DecimalFormat("0.00");
+                    priceLabel.setText("Price: $" + df.format(Double.parseDouble(item.getPrice())));
+                    description.setText(item.getDescription());
+                    quantity.setText("1");
+                }
             }
 
             @Override
@@ -126,6 +128,7 @@ public class ItemDetailActivity extends AppCompatActivity {
                     intent.putExtra("cart", guestCart);
                 }
                 startActivity(intent);
+                finish();
             }
         });
 
@@ -149,12 +152,15 @@ public class ItemDetailActivity extends AppCompatActivity {
     // the itemID parameter.
     private Item getItemData(String itemId) {
         Item item = new Item();
-        DataSnapshot itemData = data.child("items").child(itemId);
-        item.setName(itemData.child("name").getValue().toString());
-        item.setDescription(itemData.child("description").getValue().toString());
-        item.setPrice(itemData.child("price").getValue().toString());
-        item.setId(itemId);
-        return item;
+        if(data.child("items").hasChild(itemId)) {
+            DataSnapshot itemData = data.child("items").child(itemId);
+            item.setName(itemData.child("name").getValue().toString());
+            item.setDescription(itemData.child("description").getValue().toString());
+            item.setPrice(itemData.child("price").getValue().toString());
+            item.setId(itemId);
+            return item;
+        }
+        return null;
     }
 
     @Override
