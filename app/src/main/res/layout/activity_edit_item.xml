@@ -109,9 +109,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginTop="100dp"
             android:background="@color/colorPrimary"
             android:text="@string/delete_item"
-            android:textAllCaps="false" />
+            android:textAllCaps="false"
+            tools:layout_editor_absoluteX="136dp"
+            tools:layout_editor_absoluteY="578dp" />
+
     </LinearLayout>
+
 </android.support.constraint.ConstraintLayout>
