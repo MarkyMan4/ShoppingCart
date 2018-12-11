@@ -127,12 +127,20 @@ public class ShoppingCart extends AppCompatActivity implements ShoppingCartAdapt
                 }
                 if (snapshot.child("itemDiscount").hasChild(inputPromoCode)) {
                     Date today = new Date(System.currentTimeMillis());
+                    today.setHours(0);
+                    today.setMinutes(0);
+                    today.setSeconds(0);
                     SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy");
                     try {
                         Date promoStart = df.parse(snapshot.child("itemDiscount").child(inputPromoCode).child("startDate").getValue().toString());
+                        promoStart.setHours(0);
+                        promoStart.setMinutes(0);
+                        promoStart.setSeconds(0);
                         Date promoEnd = df.parse(snapshot.child("itemDiscount").child(inputPromoCode).child("endDate").getValue().toString());
-                        if(today.before(promoStart) || today.after(promoEnd))
+                        promoEnd.setSeconds(1);
+                        if(today.before(promoStart) || today.after(promoEnd)) {
                             isValid = false;
+                        }
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
@@ -250,7 +258,7 @@ public class ShoppingCart extends AppCompatActivity implements ShoppingCartAdapt
                 itemPrice -= itemPrice * itemDiscounts.get(item.getId());
             subTotal = subTotal + itemPrice * items.get(i).getQuantity();
         }
-        total.setText("Order Total: $" + df.format(subTotal));
+        total.setText("Subtotal: $" + df.format(subTotal));
     }
 
     //fills the items array if item instances for each item in the users shopping cart.
