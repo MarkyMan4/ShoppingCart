@@ -78,13 +78,14 @@ public class CheckoutActivity extends AppCompatActivity {
         shippingText = findViewById(R.id.shipping_text);
         totalText = findViewById(R.id.total_text);
         shippingState = "";
+        billingState = "";
         historyItems = new ArrayList<>();
 
         if(auth.getCurrentUser() == null) {
             isGuest = true;
             subtotal = getIntent().getDoubleExtra("total", 0.0);
-            if(!shippingState.matches("")) {
-                tax = subtotal * getSalesTax(shippingState);
+            if(!billingState.matches("")) {
+                tax = subtotal * getSalesTax(billingState);
             }
             updateLabels(subtotal, tax, shippingCost, subtotal + tax + shippingCost);
         }
@@ -117,8 +118,8 @@ public class CheckoutActivity extends AppCompatActivity {
                     if(!dataSaved)
                         getSavedInfo();
                     subtotal = getIntent().getDoubleExtra("total", 0.0);
-                    if(!shippingState.matches("")) {
-                        tax = subtotal * getSalesTax(shippingState);
+                    if(!billingState.matches("")) {
+                        tax = subtotal * getSalesTax(billingState);
                     }
                     updateLabels(subtotal, tax, shippingCost, subtotal + tax + shippingCost);
                 }
@@ -307,7 +308,7 @@ public class CheckoutActivity extends AppCompatActivity {
                         billingInfo.child("State").setValue(shippingState);
                         billingInfo.child("Zip").setValue(Integer.parseInt(shippingZip));
                     }
-                    tax = subtotal * getSalesTax(shippingState);
+                    tax = subtotal * getSalesTax(billingState);
                     updateLabels(subtotal, tax, shippingCost, subtotal + tax + shippingCost);
                     shippingCheck.setVisibility(View.VISIBLE);
                     dataSaved = true;
@@ -398,6 +399,7 @@ public class CheckoutActivity extends AppCompatActivity {
     //method that returns the sales tax rate for the state passed in.
     private double getSalesTax(String state) {
         double tax = 0.0;
+        state = state.toUpperCase();
         switch (state) {
             case "AL" : tax = 4.0; break;
             case "AK" : tax = 0.0; break;
