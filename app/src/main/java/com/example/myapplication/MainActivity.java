@@ -1,6 +1,7 @@
 package com.example.myapplication;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -215,5 +216,13 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    public void helpClick(View view) {
+        String urlString = "https://docs.google.com/document/d/1PeXOT_jJX90i0Vuq1OG6aVdl6i1fxcnhpRJfczKNlg4/edit?usp=sharing";
+        Intent intent = new Intent(Intent.ACTION_VIEW,Uri.parse(urlString));
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.setPackage("com.android.chrome");
+        startActivity(intent);
     }
 }
