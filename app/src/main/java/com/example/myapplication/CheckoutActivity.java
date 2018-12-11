@@ -256,16 +256,21 @@ public class CheckoutActivity extends AppCompatActivity {
                     toastMessage("Please fill in all the required fields");
                 }
                 else {
-                    if(!isGuest) {
-                        DatabaseReference billingInfo = dbRef.child("userInfo").child(auth.getCurrentUser().getUid()).child("billingAddress");
-                        billingInfo.child("Street").setValue(billingAddr);
-                        billingInfo.child("City").setValue(billingCity);
-                        billingInfo.child("State").setValue(billingState);
-                        billingInfo.child("Zip").setValue(Integer.parseInt(billingZip));
+                    if(getSalesTax(billingState) < 0) {
+                        toastMessage("Enter a valid state");
                     }
-                    billingCheck.setVisibility(View.VISIBLE);
-                    dataSaved = true;
-                    dialog.hide();
+                    else {
+                        if (!isGuest) {
+                            DatabaseReference billingInfo = dbRef.child("userInfo").child(auth.getCurrentUser().getUid()).child("billingAddress");
+                            billingInfo.child("Street").setValue(billingAddr);
+                            billingInfo.child("City").setValue(billingCity);
+                            billingInfo.child("State").setValue(billingState);
+                            billingInfo.child("Zip").setValue(Integer.parseInt(billingZip));
+                        }
+                        billingCheck.setVisibility(View.VISIBLE);
+                        dataSaved = true;
+                        dialog.hide();
+                    }
                 }
             }
         });
@@ -301,18 +306,23 @@ public class CheckoutActivity extends AppCompatActivity {
                     toastMessage("Please fill in all the required fields");
                 }
                 else {
-                    if(!isGuest) {
-                        DatabaseReference billingInfo = dbRef.child("userInfo").child(auth.getCurrentUser().getUid()).child("shippingAddress");
-                        billingInfo.child("Street").setValue(shippingAddr);
-                        billingInfo.child("City").setValue(shippingCity);
-                        billingInfo.child("State").setValue(shippingState);
-                        billingInfo.child("Zip").setValue(Integer.parseInt(shippingZip));
+                    if(getSalesTax(shippingState) < 0) {
+                        toastMessage("Enter a valid state");
                     }
-                    tax = subtotal * getSalesTax(billingState);
-                    updateLabels(subtotal, tax, shippingCost, subtotal + tax + shippingCost);
-                    shippingCheck.setVisibility(View.VISIBLE);
-                    dataSaved = true;
-                    dialog.hide();
+                    else {
+                        if (!isGuest) {
+                            DatabaseReference billingInfo = dbRef.child("userInfo").child(auth.getCurrentUser().getUid()).child("shippingAddress");
+                            billingInfo.child("Street").setValue(shippingAddr);
+                            billingInfo.child("City").setValue(shippingCity);
+                            billingInfo.child("State").setValue(shippingState);
+                            billingInfo.child("Zip").setValue(Integer.parseInt(shippingZip));
+                        }
+                        tax = subtotal * getSalesTax(billingState);
+                        updateLabels(subtotal, tax, shippingCost, subtotal + tax + shippingCost);
+                        shippingCheck.setVisibility(View.VISIBLE);
+                        dataSaved = true;
+                        dialog.hide();
+                    }
                 }
             }
         });
@@ -398,7 +408,7 @@ public class CheckoutActivity extends AppCompatActivity {
 
     //method that returns the sales tax rate for the state passed in.
     private double getSalesTax(String state) {
-        double tax = 0.0;
+        double tax = -1.0;
         state = state.toUpperCase();
         switch (state) {
             case "AL" : tax = 4.0; break;
